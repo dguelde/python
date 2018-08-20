@@ -1,0 +1,1 @@
+['A sepal petal and a thorn', 'Upon a common summers morn', 'A flash of dew a bee or two', 'A breeze', 'A caper in the trees ', 'And Im a rose']

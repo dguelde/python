@@ -1,0 +1,210 @@
+kernel = rbf, C = 256.0
+	 Support Vectors class 0 (by x_train index): [113, 143, 148, 151, 225, 262, 312, 360, 386, 394]
+	 Support Vectors class 1 (by x_train index): [10, 19, 65, 88, 96, 108, 158, 171, 186, 237]
+
+	accuracy = 0.991935483871
+	misclassified threes = 10.0, misclassified eights = 6.0
+	accuracy of threes = 0.990099009901, accuracy of eights = 0.993839835729
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 1175, 1179, 1192, 1195, 1636, 1644, 1976, 1980]
+	misclassified 8's: [261, 300, 480, 728, 921, 1338]
+
+
+
+kernel = rbf, C = 448.0
+	 Support Vectors class 0 (by x_train index): [113, 143, 148, 225, 262, 312, 360, 386, 394, 403]
+	 Support Vectors class 1 (by x_train index): [9, 10, 19, 65, 88, 96, 108, 158, 171, 237]
+
+	accuracy = 0.991431451613
+	misclassified threes = 11.0, misclassified eights = 6.0
+	accuracy of threes = 0.989108910891, accuracy of eights = 0.993839835729
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1195, 1636, 1644, 1976, 1980]
+	misclassified 8's: [261, 300, 480, 728, 921, 929]
+
+
+
+kernel = rbf, C = 640.0
+	 Support Vectors class 0 (by x_train index): [113, 143, 148, 225, 262, 312, 386, 394, 403, 408]
+	 Support Vectors class 1 (by x_train index): [10, 19, 65, 88, 96, 108, 158, 171, 237, 241]
+
+	accuracy = 0.991431451613
+	misclassified threes = 11.0, misclassified eights = 6.0
+	accuracy of threes = 0.989108910891, accuracy of eights = 0.993839835729
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1195, 1636, 1644, 1976, 1980]
+	misclassified 8's: [261, 300, 480, 728, 921, 929]
+
+
+
+kernel = rbf, C = 832.0
+	 Support Vectors class 0 (by x_train index): [113, 143, 148, 225, 262, 312, 386, 394, 403, 405]
+	 Support Vectors class 1 (by x_train index): [10, 19, 65, 88, 96, 108, 158, 171, 237, 241]
+
+	accuracy = 0.991431451613
+	misclassified threes = 11.0, misclassified eights = 6.0
+	accuracy of threes = 0.989108910891, accuracy of eights = 0.993839835729
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1195, 1636, 1644, 1976, 1980]
+	misclassified 8's: [261, 300, 480, 728, 921, 929]
+
+
+
+kernel = rbf, C = 1024.0
+	 Support Vectors class 0 (by x_train index): [113, 143, 148, 225, 262, 312, 386, 394, 403, 405]
+	 Support Vectors class 1 (by x_train index): [10, 19, 65, 88, 96, 108, 158, 171, 237, 241]
+
+	accuracy = 0.991431451613
+	misclassified threes = 11.0, misclassified eights = 6.0
+	accuracy of threes = 0.989108910891, accuracy of eights = 0.993839835729
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1195, 1636, 1644, 1976, 1980]
+	misclassified 8's: [261, 300, 480, 728, 921, 929]
+
+
+
+kernel = poly, C = 2048.0
+	 Support Vectors class 0 (by x_train index): [35, 113, 118, 123, 225, 255, 277, 278, 297, 312]
+	 Support Vectors class 1 (by x_train index): [19, 61, 64, 88, 125, 158, 171, 237, 238, 241]
+
+	accuracy = 0.992943548387
+	misclassified threes = 8.0, misclassified eights = 6.0
+	accuracy of threes = 0.992079207921, accuracy of eights = 0.993839835729
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1195, 1976]
+	misclassified 8's: [261, 300, 480, 921, 929, 949]
+
+
+
+kernel = poly, C = 3584.0
+	 Support Vectors class 0 (by x_train index): [35, 113, 118, 123, 225, 255, 277, 278, 297, 312]
+	 Support Vectors class 1 (by x_train index): [19, 61, 64, 88, 125, 158, 171, 237, 238, 241]
+
+	accuracy = 0.992943548387
+	misclassified threes = 7.0, misclassified eights = 7.0
+	accuracy of threes = 0.993069306931, accuracy of eights = 0.992813141684
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1976]
+	misclassified 8's: [261, 300, 480, 915, 921, 929, 949]
+
+
+
+kernel = poly, C = 5120.0
+	 Support Vectors class 0 (by x_train index): [35, 113, 118, 123, 225, 277, 278, 297, 312, 332]
+	 Support Vectors class 1 (by x_train index): [19, 64, 88, 125, 158, 171, 237, 238, 241, 243]
+
+	accuracy = 0.992943548387
+	misclassified threes = 7.0, misclassified eights = 7.0
+	accuracy of threes = 0.993069306931, accuracy of eights = 0.992813141684
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1976]
+	misclassified 8's: [261, 300, 480, 915, 921, 929, 949]
+
+
+
+kernel = poly, C = 6656.0
+	 Support Vectors class 0 (by x_train index): [35, 113, 118, 123, 225, 277, 278, 297, 312, 332]
+	 Support Vectors class 1 (by x_train index): [19, 64, 88, 125, 158, 171, 237, 238, 241, 243]
+
+	accuracy = 0.992943548387
+	misclassified threes = 7.0, misclassified eights = 7.0
+	accuracy of threes = 0.993069306931, accuracy of eights = 0.992813141684
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1976]
+	misclassified 8's: [261, 300, 480, 915, 921, 929, 949]
+
+
+
+kernel = poly, C = 8192.0
+	 Support Vectors class 0 (by x_train index): [35, 113, 118, 123, 225, 277, 278, 312, 332, 340]
+	 Support Vectors class 1 (by x_train index): [19, 64, 88, 125, 158, 171, 237, 238, 241, 243]
+
+	accuracy = 0.992439516129
+	misclassified threes = 8.0, misclassified eights = 7.0
+	accuracy of threes = 0.992079207921, accuracy of eights = 0.992813141684
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [424, 592, 707, 1175, 1179, 1192, 1976, 1980]
+	misclassified 8's: [261, 300, 480, 915, 921, 929, 949]
+
+
+
+kernel = linear, C = 0.01
+	 Support Vectors class 0 (by x_train index): [8, 51, 103, 113, 118, 133, 148, 151, 188, 198]
+	 Support Vectors class 1 (by x_train index): [17, 19, 64, 74, 77, 88, 96, 132, 157, 158]
+
+	accuracy = 0.969758064516
+	misclassified threes = 32.0, misclassified eights = 28.0
+	accuracy of threes = 0.968316831683, accuracy of eights = 0.971252566735
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [87, 192, 218, 235, 424, 465, 552, 592, 707, 784, 943, 987, 995, 1004, 1007, 1012, 1132, 1175, 1179, 1187, 1192, 1195, 1197, 1414, 1559, 1577, 1591, 1636, 1643, 1644, 1965, 1976]
+	misclassified 8's: [97, 111, 133, 160, 161, 222, 232, 261, 300, 357, 371, 376, 479, 480, 486, 599, 645, 719, 728, 745, 781, 802, 824, 825, 890, 915, 949, 1848]
+
+
+
+kernel = linear, C = 0.1
+	 Support Vectors class 0 (by x_train index): [8, 103, 113, 118, 133, 148, 151, 188, 198, 225]
+	 Support Vectors class 1 (by x_train index): [7, 9, 10, 17, 74, 88, 96, 132, 157, 171]
+
+	accuracy = 0.96875
+	misclassified threes = 31.0, misclassified eights = 31.0
+	accuracy of threes = 0.969306930693, accuracy of eights = 0.9681724846
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [87, 192, 218, 235, 424, 465, 581, 592, 707, 943, 987, 1004, 1007, 1012, 1043, 1132, 1175, 1179, 1187, 1192, 1195, 1197, 1214, 1577, 1591, 1636, 1643, 1644, 1908, 1965, 1976]
+	misclassified 8's: [97, 111, 133, 160, 161, 222, 232, 261, 300, 371, 372, 376, 479, 480, 486, 523, 599, 645, 651, 719, 728, 745, 781, 802, 824, 890, 915, 949, 970, 1432, 1848]
+
+
+
+kernel = linear, C = 1
+	 Support Vectors class 0 (by x_train index): [113, 118, 148, 151, 188, 198, 225, 306, 342, 392]
+	 Support Vectors class 1 (by x_train index): [7, 9, 10, 88, 132, 157, 171, 186, 189, 200]
+
+	accuracy = 0.967237903226
+	misclassified threes = 28.0, misclassified eights = 37.0
+	accuracy of threes = 0.972277227723, accuracy of eights = 0.962012320329
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [87, 218, 325, 422, 424, 465, 552, 581, 592, 707, 943, 987, 1007, 1012, 1132, 1175, 1179, 1187, 1192, 1195, 1197, 1214, 1591, 1636, 1643, 1644, 1965, 1976]
+	misclassified 8's: [97, 111, 133, 160, 161, 216, 232, 261, 300, 371, 372, 387, 399, 455, 479, 480, 486, 523, 599, 645, 654, 659, 719, 728, 745, 781, 783, 802, 822, 824, 890, 915, 949, 970, 1432, 1648, 1848]
+
+
+
+kernel = linear, C = 10
+	 Support Vectors class 0 (by x_train index): [35, 113, 118, 148, 151, 188, 198, 225, 306, 360]
+	 Support Vectors class 1 (by x_train index): [9, 10, 88, 132, 157, 171, 186, 200, 220, 237]
+
+	accuracy = 0.964213709677
+	misclassified threes = 33.0, misclassified eights = 38.0
+	accuracy of threes = 0.967326732673, accuracy of eights = 0.960985626283
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [0, 87, 218, 422, 424, 465, 552, 581, 592, 707, 747, 943, 987, 1007, 1012, 1132, 1175, 1179, 1187, 1192, 1195, 1197, 1239, 1591, 1636, 1644, 1647, 1649, 1965, 1970, 1976, 1980, 1981]
+	misclassified 8's: [97, 111, 133, 160, 161, 216, 232, 261, 349, 371, 380, 399, 455, 479, 480, 486, 523, 563, 599, 645, 659, 719, 728, 765, 781, 783, 802, 824, 890, 904, 915, 934, 949, 956, 970, 1089, 1432, 1648]
+
+
+
+kernel = linear, C = 100
+	 Support Vectors class 0 (by x_train index): [113, 118, 148, 151, 188, 198, 225, 394, 399, 403]
+	 Support Vectors class 1 (by x_train index): [9, 10, 74, 88, 132, 157, 171, 186, 200, 220]
+
+	accuracy = 0.960685483871
+	misclassified threes = 37.0, misclassified eights = 41.0
+	accuracy of threes = 0.963366336634, accuracy of eights = 0.957905544148
+	total threes = 1010.0, total eights = 974.0
+
+	misclassified 3's: [0, 87, 94, 218, 353, 422, 424, 465, 552, 581, 592, 707, 747, 907, 918, 943, 987, 1007, 1012, 1132, 1175, 1179, 1187, 1192, 1195, 1197, 1214, 1239, 1591, 1636, 1644, 1647, 1649, 1965, 1970, 1980, 1981]
+	misclassified 8's: [97, 111, 160, 161, 201, 232, 261, 349, 371, 380, 387, 399, 434, 455, 480, 486, 523, 563, 645, 654, 659, 719, 728, 765, 781, 801, 802, 816, 890, 904, 915, 934, 949, 956, 970, 1089, 1094, 1298, 1351, 1848, 1863]
+
+
+
