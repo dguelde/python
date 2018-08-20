@@ -1,0 +1,112 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Donovan Guelde}
+\PYG{c+c1}{\PYGZsh{} CSCI 5352 PS 5}
+
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{random}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k+kn}{as} \PYG{n+nn}{plt}
+
+\PYG{n}{INPUTSET}\PYG{o}{=} \PYG{l+m+mi}{0} \PYG{c+c1}{\PYGZsh{}0\PYGZhy{}toy data set, 1\PYGZhy{}boardmember set, 2\PYGZhy{}malaria}
+\PYG{n}{numberTrials}\PYG{o}{=}\PYG{l+m+mi}{10000}
+\PYG{n}{fStep}\PYG{o}{=}\PYG{l+m+mf}{0.02}
+
+\PYG{k}{def} \PYG{n+nf}{readFile}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{,}\PYG{n}{mData}\PYG{p}{):}
+	\PYG{k}{with} \PYG{p}{(}\PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{mData}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}r\PYGZsq{}}\PYG{p}{))} \PYG{k}{as} \PYG{n}{f}\PYG{p}{:}\PYG{c+c1}{\PYGZsh{}get metadata}
+		\PYG{k}{if} \PYG{p}{(}\PYG{n}{INPUTSET}\PYG{o}{!=}\PYG{l+m+mi}{2}\PYG{p}{):} 
+			\PYG{n}{f}\PYG{o}{.}\PYG{n}{next}\PYG{p}{()} \PYG{c+c1}{\PYGZsh{}skip label row of boardmember,toy set data}
+		\PYG{n}{maxNode}\PYG{o}{=}\PYG{l+m+mi}{0} \PYG{c+c1}{\PYGZsh{}number of nodes in network}
+		\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{f}\PYG{p}{:}
+			\PYG{n}{maxNode}\PYG{o}{+=}\PYG{l+m+mi}{1}
+		\PYG{n}{f}\PYG{o}{.}\PYG{n}{seek}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{)}
+		\PYG{n}{metadata} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{maxNode}\PYG{p}{))}
+		\PYG{k}{if} \PYG{p}{(}\PYG{n}{INPUTSET}\PYG{o}{!=}\PYG{l+m+mi}{2}\PYG{p}{):}
+			\PYG{n}{f}\PYG{o}{.}\PYG{n}{next}\PYG{p}{()}
+		\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{f}\PYG{p}{:}
+			\PYG{k}{if} \PYG{p}{(}\PYG{n}{INPUTSET}\PYG{o}{!=}\PYG{l+m+mi}{2}\PYG{p}{):}
+				\PYG{n}{node}\PYG{p}{,}\PYG{n}{gender}\PYG{o}{=}\PYG{n}{line}\PYG{o}{.}\PYG{n}{split}\PYG{p}{()[}\PYG{l+m+mi}{0}\PYG{p}{],}\PYG{n}{line}\PYG{o}{.}\PYG{n}{split}\PYG{p}{()[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{:][}\PYG{l+m+mi}{0}\PYG{p}{]}
+				\PYG{n}{node}\PYG{o}{=}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{node}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{}index from 0, not 1}
+				\PYG{n}{gender}\PYG{o}{=}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{gender}\PYG{p}{)}
+				\PYG{n}{metadata}\PYG{p}{[}\PYG{n}{node}\PYG{p}{]}\PYG{o}{=}\PYG{n}{gender}
+			\PYG{k}{else}\PYG{p}{:}
+				\PYG{n}{metadata}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]}\PYG{o}{=}\PYG{n}{line}
+				\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+	\PYG{n}{f}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+	\PYG{n}{metadata} \PYG{o}{=} \PYG{n}{metadata}\PYG{o}{.}\PYG{n}{astype}\PYG{p}{(}\PYG{n+nb}{int}\PYG{p}{)}
+	\PYG{c+c1}{\PYGZsh{} build an n x n simple network.  Uses edge weights to signify class of neighbor node}
+	\PYG{c+c1}{\PYGZsh{} ex.  A(i,j) = 2, A(j,i) = 1\PYGZhy{}\PYGZhy{}\PYGZgt{} i and j are linked, j is class 2, i is class 1}
+	\PYG{k}{with} \PYG{p}{(}\PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}r\PYGZsq{}}\PYG{p}{))} \PYG{k}{as} \PYG{n}{f}\PYG{p}{:} 
+		\PYG{n}{lines} \PYG{o}{=} \PYG{n}{f}\PYG{o}{.}\PYG{n}{readlines}\PYG{p}{()}
+		\PYG{n}{matrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{maxNode}\PYG{p}{,}\PYG{n}{maxNode}\PYG{p}{))} 
+		\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{lines}\PYG{p}{:}
+			\PYG{k}{if} \PYG{p}{(}\PYG{n}{INPUTSET}\PYG{o}{!=}\PYG{l+m+mi}{2}\PYG{p}{):}
+				\PYG{n}{node}\PYG{p}{,}\PYG{n}{neighbor} \PYG{o}{=} \PYG{n+nb}{map}\PYG{p}{(}\PYG{n+nb}{int}\PYG{p}{,}\PYG{n}{line}\PYG{o}{.}\PYG{n}{split}\PYG{p}{())}
+			\PYG{k}{else}\PYG{p}{:}
+				\PYG{n}{node}\PYG{p}{,}\PYG{n}{neighbor} \PYG{o}{=} \PYG{n+nb}{map}\PYG{p}{(}\PYG{n+nb}{int}\PYG{p}{,}\PYG{n}{line}\PYG{o}{.}\PYG{n}{split}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{},\PYGZsq{}}\PYG{p}{))}
+			\PYG{n}{node}\PYG{o}{\PYGZhy{}=}\PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{}start at [0], not [1]}
+			\PYG{n}{neighbor}\PYG{o}{\PYGZhy{}=}\PYG{l+m+mi}{1}
+			\PYG{n}{matrix}\PYG{p}{[}\PYG{n}{node}\PYG{p}{][}\PYG{n}{neighbor}\PYG{p}{]}\PYG{o}{=}\PYG{n}{metadata}\PYG{p}{[}\PYG{n}{neighbor}\PYG{p}{]} 
+			\PYG{n}{matrix}\PYG{p}{[}\PYG{n}{neighbor}\PYG{p}{][}\PYG{n}{node}\PYG{p}{]}\PYG{o}{=}\PYG{n}{metadata}\PYG{p}{[}\PYG{n}{node}\PYG{p}{]} \PYG{c+c1}{\PYGZsh{} undirected}
+	\PYG{n}{f}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+	\PYG{n}{temp} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}delete vertices with no neighbor info (different year, data set, etc.)}
+	\PYG{n}{matrix}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{delete}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,}\PYG{n}{temp}\PYG{p}{,}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)} 
+	\PYG{n}{matrix}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{delete}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{,}\PYG{n}{temp}\PYG{p}{,}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+	\PYG{n}{metadata}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{delete}\PYG{p}{(}\PYG{n}{metadata}\PYG{p}{,}\PYG{n}{temp}\PYG{p}{)} 
+	\PYG{k}{return} \PYG{n}{matrix}\PYG{p}{,}\PYG{n}{metadata}
+
+\PYG{k}{def} \PYG{n+nf}{main}\PYG{p}{():}
+	
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{INPUTSET}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{):}
+		\PYG{n}{networkFile}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}toyNetwork.txt\PYGZsq{}}
+		\PYG{n}{metadataFile}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}toyMetadata.txt\PYGZsq{}}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{INPUTSET}\PYG{o}{==}\PYG{l+m+mi}{1}\PYG{p}{):}
+		\PYG{n}{networkFile}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}net1m\PYGZus{}2011\PYGZhy{}08\PYGZhy{}01.txt\PYGZdq{}}
+		\PYG{n}{metadataFile}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}data\PYGZus{}people.txt\PYGZdq{}}
+	\PYG{k}{if}\PYG{p}{(}\PYG{n}{INPUTSET}\PYG{o}{==}\PYG{l+m+mi}{2}\PYG{p}{):}
+		\PYG{n}{networkFile}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}HVR\PYGZus{}5.txt\PYGZsq{}}
+		\PYG{n}{metadataFile}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}metadata\PYGZus{}CysPoLV.txt\PYGZsq{}}
+	\PYG{n}{associationMatrix}\PYG{p}{,}\PYG{n}{metadata}\PYG{o}{=}\PYG{n}{readFile}\PYG{p}{(}\PYG{n}{networkFile}\PYG{p}{,}\PYG{n}{metadataFile}\PYG{p}{)}
+	\PYG{n}{length} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{metadata}\PYG{p}{)}
+	\PYG{n}{numberCategories}\PYG{o}{=}\PYG{n}{metadata}\PYG{o}{.}\PYG{n}{max}\PYG{p}{()}\PYG{o}{\PYGZhy{}}\PYG{n}{metadata}\PYG{o}{.}\PYG{n}{min}\PYG{p}{()}\PYG{o}{+}\PYG{l+m+mi}{1}
+	\PYG{n}{possibleChoices}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{arange}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{numberCategories}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}
+	\PYG{n}{f}\PYG{o}{=.}\PYG{l+m+mo}{01}
+	\PYG{n}{fCounter}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{resultsOverF}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(((}\PYG{l+m+mf}{0.99}\PYG{o}{\PYGZhy{}}\PYG{n}{f}\PYG{p}{)}\PYG{o}{/}\PYG{n}{fStep}\PYG{p}{)}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}store accuracy results for each f value}
+	\PYG{n}{fValues}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(((}\PYG{l+m+mf}{0.99}\PYG{o}{\PYGZhy{}}\PYG{n}{f}\PYG{p}{)}\PYG{o}{/}\PYG{n}{fStep}\PYG{p}{)}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{} store f values used for replot, if necessary}
+	\PYG{k}{while} \PYG{p}{(}\PYG{n}{f} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{1.}\PYG{p}{):}
+		\PYG{n}{iterationResults}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{numberTrials}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}results on each iteration}
+		\PYG{n}{iterationCounter}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{iteration} \PYG{o+ow}{in} \PYG{n+nb}{xrange}\PYG{p}{(}\PYG{n}{numberTrials}\PYG{p}{):}
+			\PYG{n}{trainMatrix}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{copy}\PYG{p}{(}\PYG{n}{associationMatrix}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}make a copy so we can alter it w/out losing oiginal}
+			\PYG{n}{randomLabels}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{randint}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{high}\PYG{o}{=}\PYG{n}{numberCategories}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{size}\PYG{o}{=}\PYG{n}{length}\PYG{p}{)}
+			\PYG{n}{randomValues} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{(}\PYG{n}{length}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}matrix of \PYGZsq{}coin flips\PYGZsq{} to compare against f for our test set}
+			\PYG{n}{hiddenNodes}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{randomValues}\PYG{o}{\PYGZgt{}}\PYG{n}{f}\PYG{p}{)}
+			\PYG{k}{while} \PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{hiddenNodes}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{])}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}test set length 0 makes no sense...try again}
+				\PYG{n}{randomValues} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{(}\PYG{n}{length}\PYG{p}{)} 
+				\PYG{n}{hiddenNodes}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{randomValues}\PYG{o}{\PYGZgt{}}\PYG{n}{f}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}we hide the label on these nodes}
+			\PYG{n}{predictions}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{hiddenNodes}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]))} \PYG{c+c1}{\PYGZsh{}make predictions for nodes w/ hidden labels}
+			\PYG{n}{trainMatrix}\PYG{p}{[:,}\PYG{n}{hiddenNodes}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{0} \PYG{c+c1}{\PYGZsh{}set A(i,j) to 0 when j is hidden (can still see A(j,i) to make predictions for node j)}
+			\PYG{n}{findMajority}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{hiddenNodes}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]),}\PYG{n}{numberCategories}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}store \PYGZsq{}votes\PYGZsq{} for each vertex in seperate columns}
+			\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{numberCategories}\PYG{p}{):} 
+				\PYG{n}{findMajority}\PYG{p}{[:,}\PYG{n}{index}\PYG{p}{]}\PYG{o}{=}\PYG{p}{((}\PYG{n}{trainMatrix}\PYG{o}{==}\PYG{n}{index}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{))[}\PYG{n}{hiddenNodes}\PYG{p}{]} \PYG{c+c1}{\PYGZsh{}neighbor vote total for each vertex/class}
+			\PYG{n}{predictions}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{hiddenNodes}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]))} \PYG{c+c1}{\PYGZsh{}store predictions}
+			\PYG{n}{predictions}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{findMajority}\PYG{p}{[:,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{==}\PYG{n}{findMajority}\PYG{p}{[:,}\PYG{l+m+mi}{1}\PYG{p}{])]}\PYG{o}{=}\PYG{n}{randomLabels}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{findMajority}\PYG{p}{[:,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{==}\PYG{n}{findMajority}\PYG{p}{[:,}\PYG{l+m+mi}{1}\PYG{p}{])]} \PYG{c+c1}{\PYGZsh{}if tie (or no votes(tie of 0:0))}
+			\PYG{c+c1}{\PYGZsh{}print findMajority,\PYGZsq{}\PYGZbs{}n\PYGZsq{},predictions}
+			\PYG{n}{predictions}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{predictions}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)]}\PYG{o}{=}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{argmax}\PYG{p}{(}\PYG{n}{findMajority}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{predictions}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)],}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{))}\PYG{o}{+}\PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{}use majority to determine node class}
+			\PYG{n}{correct}\PYG{o}{=}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n}{predictions}\PYG{o}{==}\PYG{n}{metadata}\PYG{p}{[}\PYG{n}{hiddenNodes}\PYG{p}{]))}
+			\PYG{n}{iterationResults}\PYG{p}{[}\PYG{n}{iterationCounter}\PYG{p}{]}\PYG{o}{=}\PYG{n}{correct}\PYG{o}{/}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{hiddenNodes}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{])}
+			\PYG{n}{iterationCounter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+			
+		\PYG{n}{resultsOverF}\PYG{p}{[}\PYG{n}{fCounter}\PYG{p}{]}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{average}\PYG{p}{(}\PYG{n}{iterationResults}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}average accuracy of iterations over 1 f value}
+		\PYG{n}{fValues}\PYG{p}{[}\PYG{n}{fCounter}\PYG{p}{]}\PYG{o}{=}\PYG{n}{f}
+		\PYG{n}{f}\PYG{o}{+=}\PYG{n}{fStep}
+		\PYG{n}{fCounter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{fValues}\PYG{p}{,}\PYG{n}{resultsOverF}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}f\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Accuracy\PYGZsq{}}\PYG{p}{)}
+	\PYG{c+c1}{\PYGZsh{}plt.savefig(\PYGZsq{}./\PYGZob{}\PYGZcb{}\PYGZob{}\PYGZcb{}Iterations.png\PYGZsq{}.format(networkFile[:\PYGZhy{}4],numberTrials))}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{()}
+	\PYG{c+c1}{\PYGZsh{}np.savetxt(\PYGZsq{}./\PYGZob{}\PYGZcb{}\PYGZob{}\PYGZcb{}accuracy.txt\PYGZsq{}.format(networkFile[:\PYGZhy{}4],numberTrials),resultsOverF)}
+	\PYG{c+c1}{\PYGZsh{}np.savetxt(\PYGZsq{}./\PYGZob{}\PYGZcb{}\PYGZob{}\PYGZcb{}fValues.txt\PYGZsq{}.format(networkFile[:\PYGZhy{}4],numberTrials),fValues)}
+\PYG{n}{main}\PYG{p}{()}
+\end{Verbatim}

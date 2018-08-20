@@ -1,0 +1,147 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Author: Donovan Guelde}
+\PYG{c+c1}{\PYGZsh{} CSCI 5352 PS3 Question 3}
+\PYG{c+c1}{\PYGZsh{} references: online documentation for numpy, }
+\PYG{c+c1}{\PYGZsh{}		http://stackoverflow.com/questions/9754729/remove\PYGZhy{}object\PYGZhy{}from\PYGZhy{}a\PYGZhy{}list\PYGZhy{}of\PYGZhy{}objects\PYGZhy{}in\PYGZhy{}python}
+\PYG{c+c1}{\PYGZsh{} Collaborators: None}
+
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{os}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k+kn}{as} \PYG{n+nn}{plt}
+\PYG{k+kn}{import} \PYG{n+nn}{networkx} \PYG{k+kn}{as} \PYG{n+nn}{nx}
+
+\PYG{c+c1}{\PYGZsh{}fileName=\PYGZdq{}test.txt\PYGZdq{}}
+\PYG{n}{fileName}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}../../CSCI5352\PYGZus{}Data/karate\PYGZus{}club\PYGZus{}edges.txt\PYGZdq{}}
+
+\PYG{k}{def} \PYG{n+nf}{inModGroup}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{maxModularityGroups}\PYG{p}{):}
+	\PYG{k}{if} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n}{maxModularityGroups}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]:}
+		\PYG{k}{return} \PYG{l+m+mi}{0}
+	\PYG{k}{if} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n}{maxModularityGroups}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]:}
+		\PYG{k}{return} \PYG{l+m+mi}{1}
+	\PYG{k}{if} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n}{maxModularityGroups}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]:}
+		\PYG{k}{return} \PYG{l+m+mi}{2}
+
+\PYG{k}{class} \PYG{n+nc}{Network}\PYG{p}{:}
+	\PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{fileName}\PYG{p}{):}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups} \PYG{o}{=} \PYG{p}{[]} \PYG{c+c1}{\PYGZsh{}empty array at instantiation, filled and updated as merges are performed}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{n} \PYG{o}{=} \PYG{l+m+mi}{0} \PYG{c+c1}{\PYGZsh{}number of nodes in network}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{associationMatrix} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{readFile}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}simple graph }
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{m} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{associationMatrix}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mi}{2} \PYG{c+c1}{\PYGZsh{}number edges}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{regularization} \PYG{o}{=} \PYG{p}{(}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{m}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}so we only have to calculate it once...}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eMatrix} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{get\PYGZus{}e\PYGZus{}matrix}\PYG{p}{()}
+	\PYG{k}{def} \PYG{n+nf}{readFile}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{fileName}\PYG{p}{):}
+		\PYG{k}{with} \PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}r\PYGZsq{}}\PYG{p}{)} \PYG{k}{as} \PYG{n}{f}\PYG{p}{:} \PYG{c+c1}{\PYGZsh{}make 2d numpy array of appropriate size}
+			\PYG{n}{temp}\PYG{o}{=\PYGZhy{}}\PYG{l+m+mi}{1}
+			\PYG{n}{lastNode}\PYG{o}{=\PYGZhy{}}\PYG{l+m+mi}{1}
+			\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{f}\PYG{p}{:}
+				\PYG{n}{line} \PYG{o}{=} \PYG{n}{line}\PYG{o}{.}\PYG{n}{split}\PYG{p}{()}
+				\PYG{n}{temp} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]),}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]))}
+				\PYG{k}{if} \PYG{p}{(}\PYG{n}{temp}\PYG{o}{\PYGZgt{}}\PYG{n}{lastNode}\PYG{p}{):}
+					\PYG{n}{lastNode}\PYG{o}{=}\PYG{n}{temp} \PYG{c+c1}{\PYGZsh{}finds the highest numbered node }
+			\PYG{n}{associationMatrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{lastNode}\PYG{p}{,}\PYG{n}{lastNode}\PYG{p}{))}
+			\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{n} \PYG{o}{=} \PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{lastNode}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}assumes no gaps in node labelling}
+			\PYG{n}{f}\PYG{o}{.}\PYG{n}{seek}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{)}
+			\PYG{n}{lines} \PYG{o}{=} \PYG{n}{f}\PYG{o}{.}\PYG{n}{readlines}\PYG{p}{()}
+			\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{lines}\PYG{p}{:}
+				\PYG{n}{line} \PYG{o}{=} \PYG{n}{line}\PYG{o}{.}\PYG{n}{split}\PYG{p}{()}
+				\PYG{n}{associationMatrix}\PYG{p}{[}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{])}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{][}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{])}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{}make it undirected...}
+				\PYG{n}{associationMatrix}\PYG{p}{[}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{])}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{][}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{])}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{1}
+			\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{n}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}self.groups is a list of lists}
+				\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{o}{.}\PYG{n}{append}\PYG{p}{([[]])} \PYG{c+c1}{\PYGZsh{}add empty list for every vertex in graph}
+				\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{n}{index}\PYG{o}{+}\PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{}place every vertex in its own group}
+		\PYG{n}{f}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+		\PYG{k}{return} \PYG{p}{(}\PYG{n}{associationMatrix}\PYG{p}{)}
+
+	\PYG{k}{def} \PYG{n+nf}{inGroup}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{i}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}returns group that node i belongs to}
+		\PYG{n}{group}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{n}{node} \PYG{o}{=} \PYG{n}{i}
+		\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{)):}
+			\PYG{k}{if} \PYG{p}{(}\PYG{n}{node} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{[}\PYG{n}{index}\PYG{p}{]):}
+				\PYG{n}{group}\PYG{o}{=}\PYG{n}{index}
+				\PYG{k}{break}
+		\PYG{k}{return} \PYG{n}{group}
+		
+	\PYG{k}{def} \PYG{n+nf}{get\PYGZus{}e\PYGZus{}matrix}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}updates e matrix (used after merge is performed)}
+		\PYG{n}{numberGroups}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{)):}
+			\PYG{k}{if} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{]):} \PYG{c+c1}{\PYGZsh{}if group has member/members}
+				\PYG{n}{numberGroups}\PYG{o}{+=}\PYG{l+m+mi}{1}
+		\PYG{n}{eMatrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{numberGroups}\PYG{p}{,}\PYG{n}{numberGroups}\PYG{p}{))}
+		\PYG{k}{for} \PYG{n}{r} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{numberGroups}\PYG{p}{):}
+			\PYG{k}{for} \PYG{n}{s} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{numberGroups}\PYG{p}{):}
+				\PYG{n}{tempSum}\PYG{o}{=}\PYG{l+m+mf}{0.0}
+				\PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{n}\PYG{p}{):}
+					\PYG{k}{if}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{inGroup}\PYG{p}{(}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{==} \PYG{n}{r}\PYG{p}{):} 
+						\PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{n}\PYG{p}{):}
+							\PYG{k}{if} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{associationMatrix}\PYG{p}{[}\PYG{n}{i}\PYG{p}{][}\PYG{n}{j}\PYG{p}{]}\PYG{o}{==}\PYG{l+m+mi}{1}\PYG{p}{):}
+								\PYG{k}{if} \PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{inGroup}\PYG{p}{(}\PYG{n}{j}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{==} \PYG{n}{s}\PYG{p}{):}
+									\PYG{n}{tempSum}\PYG{o}{+=}\PYG{l+m+mi}{1}
+				\PYG{k}{if} \PYG{p}{(}\PYG{n}{tempSum}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{):}
+					\PYG{n}{eMatrix}\PYG{p}{[}\PYG{n}{r}\PYG{p}{][}\PYG{n}{s}\PYG{p}{]}\PYG{o}{=}\PYG{p}{(}\PYG{n}{tempSum}\PYG{o}{/}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{regularization}\PYG{p}{)}
+		\PYG{k}{return} \PYG{n}{eMatrix}
+		
+	\PYG{k}{def} \PYG{n+nf}{findDeltaQ}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{u}\PYG{p}{,}\PYG{n}{v}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}returns delta Q between groups u and v}
+		\PYG{n}{a\PYGZus{}u} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eMatrix}\PYG{p}{[}\PYG{n}{u}\PYG{p}{])}
+		\PYG{n}{a\PYGZus{}v} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eMatrix}\PYG{p}{[}\PYG{n}{v}\PYG{p}{])}
+		\PYG{k}{return} \PYG{p}{(}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eMatrix}\PYG{p}{[}\PYG{n}{u}\PYG{p}{][}\PYG{n}{v}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{p}{(}\PYG{n}{a\PYGZus{}u}\PYG{o}{*}\PYG{n}{a\PYGZus{}v}\PYG{p}{)))}
+
+	\PYG{k}{def} \PYG{n+nf}{findGreatestDeltaQ}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}returns (greatest delta Q,}
+		\PYG{c+c1}{\PYGZsh{}				index of first group to merge, index of second group to merge)}
+		\PYG{n}{deltaQ} \PYG{o}{=} \PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}\PYGZhy{}inf\PYGZsq{}}\PYG{p}{),}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{)}
+		\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{)):}
+			\PYG{k}{for} \PYG{n}{index2} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{n}{index}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{)):}
+				\PYG{n}{temp} \PYG{o}{=} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{findDeltaQ}\PYG{p}{(}\PYG{n}{index}\PYG{p}{,}\PYG{n}{index2}\PYG{p}{)}
+				\PYG{k}{if} \PYG{p}{(}\PYG{n}{deltaQ}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{\PYGZlt{}} \PYG{n}{temp}\PYG{p}{):}
+					\PYG{n}{deltaQ} \PYG{o}{=} \PYG{p}{(}\PYG{n}{temp}\PYG{p}{,}\PYG{n}{index}\PYG{p}{,}\PYG{n}{index2}\PYG{p}{)}
+		\PYG{k}{return} \PYG{n}{deltaQ}
+
+	\PYG{k}{def} \PYG{n+nf}{mergeGroups}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{r}\PYG{p}{,}\PYG{n}{s}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}merge groups r and s into r, delete s}
+		\PYG{n}{r}\PYG{o}{=}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{r}\PYG{p}{)}
+		\PYG{n}{s}\PYG{o}{=}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{s}\PYG{p}{)}
+		\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{[}\PYG{n}{s}\PYG{p}{]:}
+			\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{[}\PYG{n}{r}\PYG{p}{]}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{item}\PYG{p}{)}
+		\PYG{k}{del} \PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{[}\PYG{n}{s}\PYG{p}{]}
+		\PYG{k}{return}
+
+	\PYG{k}{def} \PYG{n+nf}{getQ}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}returns Q of network}
+		\PYG{n+nb}{sum}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{)):}
+			\PYG{n}{sum2}\PYG{o}{=}\PYG{l+m+mi}{0}
+			\PYG{k}{for} \PYG{n}{index2} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{)):}
+				\PYG{n}{sum2}\PYG{o}{+=}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eMatrix}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{n}{index2}\PYG{p}{]}
+			\PYG{n+nb}{sum}\PYG{o}{+=}\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{eMatrix}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{n}{index}\PYG{p}{]}\PYG{o}{\PYGZhy{}}\PYG{n+nb}{pow}\PYG{p}{(}\PYG{n}{sum2}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}
+		\PYG{k}{return} \PYG{n+nb}{sum}
+
+\PYG{k}{def} \PYG{n+nf}{main}\PYG{p}{():}
+	\PYG{n}{graph} \PYG{o}{=} \PYG{n}{Network}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{)}
+	\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{maxModularity}\PYG{o}{=}\PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}\PYGZhy{}inf\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{modularity}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{n}\PYG{p}{))}
+	\PYG{k}{while} \PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{)}\PYG{o}{\PYGZgt{}}\PYG{l+m+mi}{1}\PYG{p}{):}
+		\PYG{n}{temp}\PYG{o}{=}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{findGreatestDeltaQ}\PYG{p}{()} \PYG{c+c1}{\PYGZsh{}temp is a triple, (max delta Q, group to merge, group to merge)}
+		\PYG{n}{Q} \PYG{o}{=} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{getQ}\PYG{p}{()}
+		\PYG{n}{graph}\PYG{o}{.}\PYG{n}{mergeGroups}\PYG{p}{(}\PYG{n}{temp}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{],}\PYG{n}{temp}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{])}
+		\PYG{n}{modularity}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]} \PYG{o}{=} \PYG{n}{Q}
+		\PYG{k}{print} \PYG{n}{Q}
+		\PYG{k}{print} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{groups}
+		\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+		\PYG{n}{graph}\PYG{o}{.}\PYG{n}{eMatrix}\PYG{o}{=}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{get\PYGZus{}e\PYGZus{}matrix}\PYG{p}{()}
+		\PYG{k}{if} \PYG{p}{(}\PYG{n}{maxModularity}\PYG{o}{\PYGZlt{}}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{getQ}\PYG{p}{()):}
+			\PYG{n}{maxModularity}\PYG{o}{=}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{getQ}\PYG{p}{()}
+			\PYG{n}{length} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{)}
+			\PYG{n}{maxModularityGroups}\PYG{o}{=}\PYG{p}{[[]]}\PYG{o}{*}\PYG{n}{length}
+			\PYG{c+c1}{\PYGZsh{}print graph.getQ()}
+			\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{length}\PYG{p}{):}
+				\PYG{n}{maxModularityGroups}\PYG{p}{[}\PYG{n}{index}\PYG{p}{]} \PYG{o}{=} \PYG{n}{graph}\PYG{o}{.}\PYG{n}{groups}\PYG{p}{[}\PYG{n}{index}\PYG{p}{]}
+	\PYG{k}{print} \PYG{n}{maxModularity}
+	\PYG{k}{print} \PYG{n}{maxModularityGroups}
+	
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Modularity Q\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}number of merges\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlim}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{34}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Modularity of Zachary Karate Club as a Function of Merges}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s1}{ (using Greedy Agglomerative Algorithm)\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{modularity}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}karateMerge.jpg\PYGZdq{}}\PYG{p}{)}
+	
+\PYG{n}{main}\PYG{p}{()}
+\end{Verbatim}

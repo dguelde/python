@@ -1,0 +1,99 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Donovan Guelde}
+\PYG{c+c1}{\PYGZsh{} CSCI\PYGZhy{}5352}
+\PYG{c+c1}{\PYGZsh{} PS6 Q.1.a}
+
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k+kn}{as} \PYG{n+nn}{plt}
+
+
+
+\PYG{k}{def} \PYG{n+nf}{growNetwork}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{n}\PYG{p}{,}\PYG{n}{pr}\PYG{p}{,}\PYG{n}{c}\PYG{p}{):}
+
+	\PYG{n}{vertexLabelList}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{full}\PYG{p}{(}\PYG{n}{n}\PYG{o}{*}\PYG{n}{c}\PYG{p}{,}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+	\PYG{n}{adjacencyList}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{shape}\PYG{o}{=}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,}\PYG{n}{c}\PYG{p}{))}
+	\PYG{n}{adjacencyList}\PYG{o}{.}\PYG{n}{fill}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+	\PYG{n}{numberVertexes}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{numberEdges}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{iterations}\PYG{o}{=}\PYG{l+m+mi}{1}
+	\PYG{c+c1}{\PYGZsh{}make a \PYGZsq{}seed\PYGZsq{} graph, c+1 nodes to simulate growth from 0 nodes}
+	\PYG{c+c1}{\PYGZsh{}node 0 has no outgoing edges, node 1 points to 0, node 2 points to 0 and 1, }
+	\PYG{c+c1}{\PYGZsh{}node 3 points to nodes 0,1,2, etc. Node[c+1] now has c outgoing edges}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{c}\PYG{p}{):}
+		\PYG{k}{for} \PYG{n}{index2} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{index}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{c}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{):}
+			\PYG{n}{adjacencyList}\PYG{p}{[}\PYG{n}{index2}\PYG{p}{][}\PYG{n}{index}\PYG{p}{]}\PYG{o}{=}\PYG{n}{index}
+			\PYG{n}{vertexLabelList}\PYG{p}{[}\PYG{n}{numberEdges}\PYG{p}{]}\PYG{o}{=}\PYG{n}{index}
+			\PYG{n}{numberEdges}\PYG{o}{+=}\PYG{l+m+mi}{1}
+	\PYG{n}{numberVertexes}\PYG{o}{=}\PYG{n}{c}\PYG{o}{+}\PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{}we preseeded |c+1| vertexts}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{numberVertexes}\PYG{p}{,}\PYG{n}{n}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}add remaining vertexes to network}
+		\PYG{n}{chosen}\PYG{o}{=}\PYG{p}{[]}
+		\PYG{n}{tempList}\PYG{o}{=}\PYG{n}{vertexLabelList}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{:}\PYG{n}{numberEdges}\PYG{p}{]}
+		\PYG{n}{coinFlips}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{(}\PYG{n}{c}\PYG{p}{)}
+		\PYG{k}{for} \PYG{n}{index2} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{c}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}each new vertex hac c out\PYGZhy{}degree}
+			\PYG{k}{if} \PYG{n}{coinFlips}\PYG{p}{[}\PYG{n}{index2}\PYG{p}{]}\PYG{o}{\PYGZlt{}}\PYG{n}{pr}\PYG{p}{:} \PYG{c+c1}{\PYGZsh{}choose in proportion to in\PYGZhy{}degree}
+				\PYG{n}{edgePointsTo}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{choice}\PYG{p}{(}\PYG{n}{tempList}\PYG{p}{)}
+				\PYG{k}{while} \PYG{p}{(}\PYG{n}{edgePointsTo} \PYG{o+ow}{in} \PYG{n}{chosen} \PYG{o+ow}{or} \PYG{n}{edgePointsTo}\PYG{o}{==\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{):}
+					\PYG{n}{edgePointsTo}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{choice}\PYG{p}{(}\PYG{n}{tempList}\PYG{p}{)}
+			\PYG{k}{else}\PYG{p}{:} \PYG{c+c1}{\PYGZsh{}randomly select}
+				\PYG{n}{edgePointsTo}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{randint}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{high}\PYG{o}{=}\PYG{n}{numberVertexes}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+				\PYG{k}{while}\PYG{p}{(}\PYG{n}{edgePointsTo} \PYG{o+ow}{in} \PYG{n}{chosen}\PYG{p}{):}
+					\PYG{n}{edgePointsTo}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{randint}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{high}\PYG{o}{=}\PYG{n}{numberVertexes}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+			\PYG{n}{chosen}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{edgePointsTo}\PYG{p}{)}
+		\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{n}{numberVertexes}\PYG{o}{+=}\PYG{l+m+mi}{1}
+		\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n}{chosen}\PYG{p}{:} \PYG{c+c1}{\PYGZsh{}add new edges to list}
+			\PYG{n}{adjacencyList}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{n}{counter}\PYG{p}{]}\PYG{o}{=}\PYG{n}{item}
+			\PYG{n}{vertexLabelList}\PYG{p}{[}\PYG{n}{numberEdges}\PYG{p}{]}\PYG{o}{=}\PYG{n}{item}
+			\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+			\PYG{n}{numberEdges}\PYG{o}{+=}\PYG{l+m+mi}{1}
+	\PYG{k}{return} \PYG{n}{adjacencyList}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{:]} 
+
+
+
+
+\PYG{k}{def} \PYG{n+nf}{main}\PYG{p}{():}
+	\PYG{c+c1}{\PYGZsh{}parameters per assignment}
+	\PYG{n}{c}\PYG{o}{=}\PYG{l+m+mi}{3}
+	\PYG{n}{N}\PYG{o}{=}\PYG{l+m+mi}{1000000}
+	\PYG{n}{R}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mf}{1.}\PYG{p}{,}\PYG{l+m+mf}{2.}\PYG{p}{,}\PYG{l+m+mf}{3.}\PYG{p}{,}\PYG{l+m+mf}{4.}\PYG{p}{]}
+	\PYG{n}{XaxisResults}\PYG{o}{=}\PYG{p}{[]}
+	\PYG{n}{YaxisResults}\PYG{o}{=}\PYG{p}{[]}
+	\PYG{c+c1}{\PYGZsh{}bigger r \PYGZhy{}\PYGZhy{}\PYGZgt{} lower pr \PYGZhy{}\PYGZhy{}\PYGZgt{} higher chance of random assignment of new edges \PYGZhy{}\PYGZhy{}\PYGZgt{} more uniform distribution}
+	\PYG{k}{for} \PYG{n}{r} \PYG{o+ow}{in} \PYG{n}{R}\PYG{p}{:}
+		\PYG{n}{pr}\PYG{o}{=}\PYG{n}{c}\PYG{o}{/}\PYG{p}{(}\PYG{n}{c}\PYG{o}{+}\PYG{n}{r}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}probability of attaching to node in proportion of in\PYGZhy{}degree}
+		\PYG{n}{n}\PYG{o}{=}\PYG{n}{N}
+		\PYG{n}{fileName} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}1a\PYGZus{}plot.png\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{r}\PYG{p}{))}
+
+		\PYG{n}{adjacencyList}\PYG{o}{=}\PYG{n}{growNetwork}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,}\PYG{n}{n}\PYG{p}{,}\PYG{n}{pr}\PYG{p}{,}\PYG{n}{c}\PYG{p}{)}
+		\PYG{n}{nodes}\PYG{p}{,}\PYG{n}{indegree}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{unique}\PYG{p}{(}\PYG{n}{adjacencyList}\PYG{p}{,}\PYG{n}{return\PYGZus{}counts}\PYG{o}{=}\PYG{n+nb+bp}{True}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}}
+		\PYG{n}{uniqueValues}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{unique}\PYG{p}{(}\PYG{n}{indegree}\PYG{p}{)}
+		\PYG{n}{indegreeList}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{n}\PYG{p}{)}
+		\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n}{nodes}\PYG{p}{:}
+			\PYG{k}{if}\PYG{p}{(}\PYG{n}{item}\PYG{o}{!=\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{):}
+				\PYG{n}{indegreeList}\PYG{p}{[}\PYG{n}{item}\PYG{p}{]}\PYG{o}{=}\PYG{n}{indegree}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]}
+			\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+		
+		\PYG{n}{xAxis}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{unique}\PYG{p}{(}\PYG{n}{indegreeList}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}observed degree on x axis}
+		\PYG{n}{XaxisResults}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{xAxis}\PYG{p}{)}
+		\PYG{n}{yAxis}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{xAxis}\PYG{p}{))}
+		\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n}{uniqueValues}\PYG{p}{:}
+			\PYG{n}{yAxis}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{count\PYGZus{}nonzero}\PYG{p}{(}\PYG{n}{indegreeList}\PYG{o}{\PYGZgt{}=}\PYG{n}{item}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}fraction (nodes indegree \PYGZgt{}= indegree k)}
+			\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+		\PYG{n}{yAxis}\PYG{o}{=}\PYG{n}{yAxis}\PYG{o}{/}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{amax}\PYG{p}{(}\PYG{n}{yAxis}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}regularize as a fraction \PYGZlt{} 1}
+		\PYG{n}{YaxisResults}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{yAxis}\PYG{p}{)}
+		
+	\PYG{n}{labels}\PYG{o}{=}\PYG{p}{[}\PYG{l+s+s1}{\PYGZsq{}R=1\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}R=2\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}R=3\PYGZsq{}}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}R=4\PYGZsq{}}\PYG{p}{]}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}CCDF of Price}\PYG{l+s+se}{\PYGZbs{}\PYGZsq{}}\PYG{l+s+s1}{s Model with r=[1,2,3,4]\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}in\PYGZhy{}degree k\PYGZus{}in\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Pr(K\PYGZgt{}k\PYGZus{}in)\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlim}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{n}\PYG{p}{)}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{R}\PYG{p}{)):}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{loglog}\PYG{p}{(}\PYG{n}{XaxisResults}\PYG{p}{[}\PYG{n}{index}\PYG{p}{],}\PYG{n}{YaxisResults}\PYG{p}{[}\PYG{n}{index}\PYG{p}{],}\PYG{n}{label}\PYG{o}{=}\PYG{n}{labels}\PYG{p}{[}\PYG{n}{index}\PYG{p}{])}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{n}{loc}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}upper right\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+	
+\PYG{n}{main}\PYG{p}{()}
+\end{Verbatim}

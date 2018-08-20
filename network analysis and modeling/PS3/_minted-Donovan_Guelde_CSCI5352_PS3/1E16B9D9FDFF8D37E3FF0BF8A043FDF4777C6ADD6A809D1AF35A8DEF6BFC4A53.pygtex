@@ -1,0 +1,102 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Donovan Guelde}
+\PYG{c+c1}{\PYGZsh{} CSCI 5352 PS3}
+\PYG{c+c1}{\PYGZsh{} Plotter for PS3, Q4}
+
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k+kn}{as} \PYG{n+nn}{plt}
+
+\PYG{k}{def} \PYG{n+nf}{readData}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{):}
+	\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{k}{with} \PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}r\PYGZsq{}}\PYG{p}{)} \PYG{k}{as} \PYG{n}{f}\PYG{p}{:}
+		\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{f}\PYG{p}{:}
+			\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+		\PYG{n}{f}\PYG{o}{.}\PYG{n}{seek}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{)}
+		\PYG{n}{data} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{counter}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{} array to  hold data}
+		\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{n}{maxDataPoint} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}\PYGZhy{}inf\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{maxIndex}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{n}{minDataPoint} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}inf\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{nimIndex}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{f}\PYG{p}{:}
+			\PYG{n}{data}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{line}\PYG{p}{)}
+			\PYG{k}{if} \PYG{n}{data}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]} \PYG{o}{\PYGZgt{}} \PYG{n}{maxDataPoint}\PYG{p}{:}
+				\PYG{n}{maxDataPoint}\PYG{o}{=}\PYG{n}{data}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]}
+				\PYG{n}{maxIndex}\PYG{o}{=}\PYG{n}{counter}
+			\PYG{k}{if} \PYG{n}{data}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]} \PYG{o}{\PYGZlt{}} \PYG{n}{minDataPoint}\PYG{p}{:}
+				\PYG{n}{minDataPoint}\PYG{o}{=}\PYG{n}{data}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]}
+				\PYG{n}{minIndex}\PYG{o}{=}\PYG{n}{counter}
+			\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+	\PYG{k}{return} \PYG{n}{data}\PYG{p}{,} \PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{maxIndex}\PYG{p}{),} \PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{minIndex}\PYG{p}{)}
+
+\PYG{k}{def} \PYG{n+nf}{readNames}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{):}
+	\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{k}{with} \PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}r\PYGZsq{}}\PYG{p}{)} \PYG{k}{as} \PYG{n}{f}\PYG{p}{:}
+		\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{f}\PYG{p}{:}
+			\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+		\PYG{n}{f}\PYG{o}{.}\PYG{n}{seek}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{)}
+		\PYG{n}{data} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}}\PYG{p}{]}\PYG{o}{*}\PYG{n}{counter}
+		\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{f}\PYG{p}{:}
+			\PYG{n}{data}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]} \PYG{o}{=} \PYG{n}{line}
+			\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+	\PYG{k}{return} \PYG{n}{data}
+\PYG{k}{def} \PYG{n+nf}{getData}\PYG{p}{(}\PYG{n}{attribute}\PYG{p}{):}
+	\PYG{k}{if} \PYG{n}{attribute} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}major\PYGZdq{}}\PYG{p}{:}
+		\PYG{n}{data}\PYG{p}{,} \PYG{n}{maxPoint}\PYG{p}{,} \PYG{n}{minPoint} \PYG{o}{=} \PYG{n}{readData}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}./results/majorModularity.txt\PYGZdq{}}\PYG{p}{)}
+	\PYG{k}{if} \PYG{n}{attribute} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}status\PYGZdq{}}\PYG{p}{:}
+		\PYG{n}{data}\PYG{p}{,} \PYG{n}{maxPoint}\PYG{p}{,} \PYG{n}{minPoint} \PYG{o}{=} \PYG{n}{readData}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}./results/statusModularity.txt\PYGZdq{}}\PYG{p}{)}
+	\PYG{k}{if} \PYG{n}{attribute} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}vertex\PYGZdq{}}\PYG{p}{:}
+		\PYG{n}{data}\PYG{p}{,} \PYG{n}{maxPoint}\PYG{p}{,} \PYG{n}{minPoint} \PYG{o}{=} \PYG{n}{readData}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}./results/vertexAssortativity.txt\PYGZdq{}}\PYG{p}{)}
+	\PYG{k}{return} \PYG{n}{data}\PYG{p}{,}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{maxPoint}\PYG{p}{),}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{minPoint}\PYG{p}{)}
+
+
+
+\PYG{k}{def} \PYG{n+nf}{main}\PYG{p}{():}
+	
+	\PYG{n}{nArray}\PYG{p}{,}\PYG{n}{nMax}\PYG{p}{,}\PYG{n}{nMin} \PYG{o}{=} \PYG{n}{readData}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}./results/nValues.txt\PYGZdq{}}\PYG{p}{)}
+	\PYG{n}{names} \PYG{o}{=} \PYG{n}{readNames}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}./results/names.txt\PYGZdq{}}\PYG{p}{)}
+	\PYG{n}{attributes} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}major\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}status\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}vertex\PYGZdq{}}\PYG{p}{]}
+	
+	\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n}{attributes}\PYG{p}{:} 
+		\PYG{c+c1}{\PYGZsh{} scatter plots}
+		\PYG{n}{data}\PYG{p}{,}\PYG{n}{maxPoint}\PYG{p}{,}\PYG{n}{minPoint} \PYG{o}{=} \PYG{n}{getData}\PYG{p}{(}\PYG{n}{item}\PYG{p}{)}
+		\PYG{k}{if} \PYG{n}{item} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}vertex\PYGZdq{}}\PYG{p}{:}
+			\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Vertex Degree Assortativity\PYGZsq{}}\PYG{p}{)}
+		\PYG{k}{else}\PYG{p}{:}
+			\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{n}{item}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{} modularity\PYGZdq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Network Size, n\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Network Size vs \PYGZsq{}}\PYG{o}{+}\PYG{n}{item}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{scatter}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{,}\PYG{n}{data}\PYG{p}{)}
+		\PYG{k}{if} \PYG{n}{item}\PYG{o}{==}\PYG{l+s+s1}{\PYGZsq{}major\PYGZsq{}}\PYG{p}{:}
+			\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylim}\PYG{p}{(}\PYG{o}{\PYGZhy{}.}\PYG{l+m+mo}{01}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{14}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{text}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{[}\PYG{n}{maxPoint}\PYG{p}{]),}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{n}{maxPoint}\PYG{p}{]),}\PYG{n}{names}\PYG{p}{[}\PYG{n}{maxPoint}\PYG{p}{])}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{[}\PYG{n}{maxPoint}\PYG{p}{]),}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{n}{maxPoint}\PYG{p}{]),}\PYG{l+s+s1}{\PYGZsq{}o\PYGZsq{}}\PYG{p}{,}\PYG{n}{mfc}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}red\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{text}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{[}\PYG{n}{minPoint}\PYG{p}{]),}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{n}{minPoint}\PYG{p}{]),}\PYG{n}{names}\PYG{p}{[}\PYG{n}{minPoint}\PYG{p}{])}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{[}\PYG{n}{minPoint}\PYG{p}{]),}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{n}{minPoint}\PYG{p}{]),}\PYG{l+s+s1}{\PYGZsq{}o\PYGZsq{}}\PYG{p}{,}\PYG{n}{mfc}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}red\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{text}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{[}\PYG{n}{nMax}\PYG{p}{]),}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{n}{nMax}\PYG{p}{]),}\PYG{n}{names}\PYG{p}{[}\PYG{n}{nMax}\PYG{p}{])}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{[}\PYG{n}{nMax}\PYG{p}{]),}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{n}{nMax}\PYG{p}{]),}\PYG{l+s+s1}{\PYGZsq{}o\PYGZsq{}}\PYG{p}{,}\PYG{n}{mfc}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}red\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{text}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{[}\PYG{n}{nMin}\PYG{p}{]),}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{n}{nMin}\PYG{p}{]),}\PYG{n}{names}\PYG{p}{[}\PYG{n}{nMin}\PYG{p}{])}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{nArray}\PYG{p}{[}\PYG{n}{nMin}\PYG{p}{]),}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{data}\PYG{p}{[}\PYG{n}{nMin}\PYG{p}{]),}\PYG{l+s+s1}{\PYGZsq{}o\PYGZsq{}}\PYG{p}{,}\PYG{n}{mfc}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}red\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{axhline}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{linestyle}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}dashed\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xscale}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}log\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{n}{item}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}.jpg\PYGZdq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{clf}\PYG{p}{()}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+
+		\PYG{c+c1}{\PYGZsh{} histograms}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{hist}\PYG{p}{(}\PYG{n}{data}\PYG{p}{)}
+		\PYG{k}{if} \PYG{n}{item}\PYG{o}{==}\PYG{l+s+s1}{\PYGZsq{}status\PYGZsq{}}\PYG{p}{:}
+			\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlim}\PYG{p}{(}\PYG{o}{\PYGZhy{}.}\PYG{l+m+mo}{05}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{30}\PYG{p}{)}
+		\PYG{k}{if} \PYG{n}{item}\PYG{o}{==}\PYG{l+s+s1}{\PYGZsq{}major\PYGZsq{}}\PYG{p}{:}
+			\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlim}\PYG{p}{(}\PYG{o}{\PYGZhy{}.}\PYG{l+m+mo}{01}\PYG{p}{,}\PYG{o}{.}\PYG{l+m+mi}{14}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Histogram of \PYGZsq{}}\PYG{o}{+}\PYG{n}{item}\PYG{o}{+}\PYG{l+s+s1}{\PYGZsq{} Assortativity\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Assortativity (\PYGZsq{}}\PYG{o}{+}\PYG{n}{item}\PYG{o}{+}\PYG{l+s+s1}{\PYGZsq{})\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Frequency\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{axvline}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{linestyle}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}dashed\PYGZsq{}}\PYG{p}{,} \PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}red\PYGZsq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{n}{item}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}Hist.jpg\PYGZdq{}}\PYG{p}{)}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{clf}\PYG{p}{()}
+		\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+
+\PYG{n}{main}\PYG{p}{()}
+\end{Verbatim}

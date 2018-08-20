@@ -1,0 +1,130 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Donovan Guelde}
+\PYG{c+c1}{\PYGZsh{} CSCI 5352, Fall \PYGZsq{}16}
+\PYG{c+c1}{\PYGZsh{} Problem 5}
+\PYG{c+c1}{\PYGZsh{} References: networkx documentation, numpy docs}
+
+\PYG{k+kn}{import} \PYG{n+nn}{networkx}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k+kn}{as} \PYG{n+nn}{plt}
+\PYG{k+kn}{import} \PYG{n+nn}{sys}
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
+
+
+\PYG{k}{class} \PYG{n+nc}{Node}\PYG{p}{:}
+	\PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{number}\PYG{p}{,}\PYG{n}{name}\PYG{p}{):}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{name} \PYG{o}{=} \PYG{n}{name}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{number} \PYG{o}{=} \PYG{n}{number}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{neighbors} \PYG{o}{=} \PYG{p}{[]}
+	\PYG{k}{def} \PYG{n+nf}{assignNeighbors}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{neighbors}\PYG{p}{):}
+		\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n}{neighbors}\PYG{p}{:}
+			\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{neighbors}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{item}\PYG{p}{)}
+
+\PYG{k}{class} \PYG{n+nc}{Network}\PYG{p}{:} 
+	\PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{n}\PYG{p}{):}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{nodes} \PYG{o}{=} \PYG{p}{[]}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{n} \PYG{o}{=} \PYG{n}{n}
+
+\PYG{k}{if} \PYG{n}{\PYGZus{}\PYGZus{}name\PYGZus{}\PYGZus{}} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}\PYGZus{}\PYGZus{}main\PYGZus{}\PYGZus{}\PYGZdq{}}\PYG{p}{:}
+	\PYG{n}{network} \PYG{o}{=} \PYG{n}{Network}\PYG{p}{(}\PYG{l+m+mi}{16}\PYG{p}{)}
+	\PYG{n}{names} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}Acciaiuoli\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Albizzi\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Barbadori\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Bischeri\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Castellani\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Ginori\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Guadagni\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Lamberteschi\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Medici\PYGZdq{}}\PYG{p}{,}
+				\PYG{l+s+s2}{\PYGZdq{}Pazzi\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Peruzzi\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Pucci\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Ridolfi\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Salviati\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Strozzi\PYGZdq{}}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}Tornabuoni\PYGZdq{}}\PYG{p}{]}
+	\PYG{n}{neighbors} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{:[}\PYG{l+m+mi}{8}\PYG{p}{],}\PYG{l+m+mi}{1}\PYG{p}{:[}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{l+m+mi}{6}\PYG{p}{,}\PYG{l+m+mi}{8}\PYG{p}{],}\PYG{l+m+mi}{2}\PYG{p}{:[}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{8}\PYG{p}{],}\PYG{l+m+mi}{3}\PYG{p}{:[}\PYG{l+m+mi}{6}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{14}\PYG{p}{],}\PYG{l+m+mi}{4}\PYG{p}{:[}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{14}\PYG{p}{],}\PYG{l+m+mi}{5}\PYG{p}{:[}\PYG{l+m+mi}{1}\PYG{p}{],}\PYG{l+m+mi}{6}\PYG{p}{:[}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{7}\PYG{p}{,}\PYG{l+m+mi}{15}\PYG{p}{],}\PYG{l+m+mi}{7}\PYG{p}{:[}\PYG{l+m+mi}{6}\PYG{p}{],}\PYG{l+m+mi}{8}\PYG{p}{:[}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{12}\PYG{p}{,}\PYG{l+m+mi}{13}\PYG{p}{,}\PYG{l+m+mi}{15}\PYG{p}{],}
+				\PYG{l+m+mi}{9}\PYG{p}{:[}\PYG{l+m+mi}{13}\PYG{p}{],}\PYG{l+m+mi}{10}\PYG{p}{:[}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{14}\PYG{p}{],}\PYG{l+m+mi}{11}\PYG{p}{:[],}\PYG{l+m+mi}{12}\PYG{p}{:[}\PYG{l+m+mi}{8}\PYG{p}{,}\PYG{l+m+mi}{14}\PYG{p}{,}\PYG{l+m+mi}{15}\PYG{p}{],}\PYG{l+m+mi}{13}\PYG{p}{:[}\PYG{l+m+mi}{8}\PYG{p}{,}\PYG{l+m+mi}{9}\PYG{p}{],}\PYG{l+m+mi}{14}\PYG{p}{:[}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{12}\PYG{p}{],}\PYG{l+m+mi}{15}\PYG{p}{:[}\PYG{l+m+mi}{6}\PYG{p}{,}\PYG{l+m+mi}{8}\PYG{p}{,}\PYG{l+m+mi}{12}\PYG{p}{]\PYGZcb{}}
+	\PYG{n}{graph} \PYG{o}{=} \PYG{n}{networkx}\PYG{o}{.}\PYG{n}{from\PYGZus{}dict\PYGZus{}of\PYGZus{}lists}\PYG{p}{(}\PYG{n}{neighbors}\PYG{p}{)}
+
+	\PYG{n}{shortestPaths} \PYG{o}{=} \PYG{p}{[]} \PYG{c+c1}{\PYGZsh{}an array to hold ALL shortest paths, to avoid the networkx habit of using only 1 shortest path,}
+				\PYG{c+c1}{\PYGZsh{}even if more exist}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{k}{for} \PYG{n}{index2} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+			
+			\PYG{k}{try}\PYG{p}{:}
+				\PYG{n}{shortestPaths}\PYG{o}{.}\PYG{n}{append}\PYG{p}{([}\PYG{n}{p} \PYG{k}{for} \PYG{n}{p} \PYG{o+ow}{in} \PYG{n}{networkx}\PYG{o}{.}\PYG{n}{all\PYGZus{}shortest\PYGZus{}paths}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{,}\PYG{n}{index}\PYG{p}{,}\PYG{n}{index2}\PYG{p}{)])} 
+								\PYG{c+c1}{\PYGZsh{}vertex 11 will cause error}
+			\PYG{k}{except}\PYG{p}{(}\PYG{n}{networkx}\PYG{o}{.}\PYG{n}{exception}\PYG{o}{.}\PYG{n}{NetworkXNoPath}\PYG{p}{):}
+				\PYG{k}{print}\PYG{l+s+s2}{\PYGZdq{}\PYGZdq{}} \PYG{c+c1}{\PYGZsh{}do nothing for vertex 11, it has no shortest paths except self\PYGZhy{}loop}
+	
+	
+
+	\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}degree centrality\PYGZdq{}}
+	\PYG{n}{degreeCentrality} \PYG{o}{=} \PYG{p}{[]}
+	\PYG{n}{centrality} \PYG{o}{=} \PYG{n}{networkx}\PYG{o}{.}\PYG{n}{degree\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{)}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{n}{indexCentrality} \PYG{o}{=} \PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{centrality}\PYG{p}{[}\PYG{n}{index}\PYG{p}{]}\PYG{o}{*}\PYG{l+m+mi}{15}\PYG{p}{)}
+		\PYG{k}{print} \PYG{n+nb}{str}\PYG{p}{(}\PYG{n}{index}\PYG{p}{)}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}:\PYGZdq{}}\PYG{p}{,}\PYG{n}{indexCentrality}
+		\PYG{n}{degreeCentrality}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{indexCentrality}\PYG{p}{)}
+	\PYG{k}{print} \PYG{n}{degreeCentrality}
+
+	\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}harmonic centrality\PYGZdq{}}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{k}{if}\PYG{p}{(}\PYG{n}{index}\PYG{o}{!=}\PYG{l+m+mi}{11}\PYG{p}{):}
+			\PYG{n+nb}{sum}\PYG{o}{=}\PYG{l+m+mi}{0}
+			\PYG{k}{for} \PYG{n}{index2} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+				\PYG{k}{if}\PYG{p}{(}\PYG{n}{index}\PYG{o}{!=}\PYG{n}{index2} \PYG{o+ow}{and} \PYG{n}{index} \PYG{o}{!=}\PYG{l+m+mi}{11} \PYG{o+ow}{and} \PYG{n}{index2} \PYG{o}{!=} \PYG{l+m+mi}{11}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}again, don\PYGZsq{}t try for vertex 11}
+					\PYG{n+nb}{sum}\PYG{o}{+=}\PYG{n}{networkx}\PYG{o}{.}\PYG{n}{shortest\PYGZus{}path\PYGZus{}length}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{,}\PYG{n}{index}\PYG{p}{,}\PYG{n}{index2}\PYG{p}{)}
+			\PYG{k}{print} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{/}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n+nb}{sum}\PYG{p}{))}\PYG{o}{/}\PYG{l+m+mi}{15}
+		\PYG{k}{else}\PYG{p}{:}
+			\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}0\PYGZdq{}}
+
+	\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}eigenvector centrality\PYGZdq{}}
+	\PYG{n}{eigenvectorCentrality} \PYG{o}{=} \PYG{n}{networkx}\PYG{o}{.}\PYG{n}{eigenvector\PYGZus{}centrality}\PYG{p}{(}\PYG{n}{graph}\PYG{p}{)}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{k}{print} \PYG{n}{eigenvectorCentrality}\PYG{p}{[}\PYG{n}{index}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZsh{}betweenness, didn\PYGZsq{}t use networkx command to allow for multiple shortest paths}
+	\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}betweenness centrality\PYGZdq{}}
+	
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{n}{counter} \PYG{o}{=} \PYG{l+m+mi}{0}
+		\PYG{n}{counter2}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n}{shortestPaths}\PYG{p}{:}
+			\PYG{k}{for} \PYG{n}{item2} \PYG{o+ow}{in} \PYG{n}{item}\PYG{p}{:}
+				\PYG{n}{counter2} \PYG{o}{+=} \PYG{l+m+mi}{1}
+				\PYG{k}{if} \PYG{p}{(}\PYG{n}{index} \PYG{o+ow}{in} \PYG{n}{item2}\PYG{p}{):}
+					
+					\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+
+		\PYG{k}{print} \PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{counter}\PYG{p}{)}\PYG{o}{/}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{counter2}\PYG{p}{))}\PYG{o}{/}\PYG{n+nb}{pow}\PYG{p}{(}\PYG{l+m+mi}{16}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}
+
+
+	\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}configuration model:\PYGZdq{}}
+
+	
+	\PYG{n}{configurationResults} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((} \PYG{l+m+mi}{16}\PYG{p}{,} \PYG{l+m+mi}{100000} \PYG{p}{))}
+	
+	\PYG{k}{for} \PYG{n}{repetition} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{100000}\PYG{p}{):}
+		\PYG{n}{tempGraph} \PYG{o}{=} \PYG{n}{networkx}\PYG{o}{.}\PYG{n}{configuration\PYGZus{}model}\PYG{p}{(}\PYG{n}{degreeCentrality}\PYG{p}{)}
+		\PYG{c+c1}{\PYGZsh{}perform violence}
+		\PYG{n}{tempGraph} \PYG{o}{=} \PYG{n}{networkx}\PYG{o}{.}\PYG{n}{Graph}\PYG{p}{(}\PYG{n}{tempGraph}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}collapse multi\PYGZhy{}edges}
+		\PYG{n}{tempGraph}\PYG{o}{.}\PYG{n}{remove\PYGZus{}edges\PYGZus{}from}\PYG{p}{(}\PYG{n}{tempGraph}\PYG{o}{.}\PYG{n}{selfloop\PYGZus{}edges}\PYG{p}{())} \PYG{c+c1}{\PYGZsh{}eliminate self\PYGZhy{}loops}
+		\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+			\PYG{n+nb}{sum}\PYG{o}{=}\PYG{l+m+mi}{0}
+			\PYG{k}{for} \PYG{n}{index2} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+				\PYG{k}{if}\PYG{p}{(}\PYG{n}{index}\PYG{o}{!=}\PYG{n}{index2}\PYG{p}{):}
+					\PYG{k}{try}\PYG{p}{:}
+						\PYG{n+nb}{sum}\PYG{o}{+=}\PYG{n}{networkx}\PYG{o}{.}\PYG{n}{shortest\PYGZus{}path\PYGZus{}length}\PYG{p}{(}\PYG{n}{tempGraph}\PYG{p}{,}\PYG{n}{index}\PYG{p}{,}\PYG{n}{index2}\PYG{p}{)}
+						
+					\PYG{k}{except} \PYG{p}{(}\PYG{n}{networkx}\PYG{o}{.}\PYG{n}{exception}\PYG{o}{.}\PYG{n}{NetworkXNoPath}\PYG{p}{):}
+						\PYG{n+nb}{sum}\PYG{o}{+=}\PYG{l+m+mi}{0}
+						
+			\PYG{k}{try}\PYG{p}{:}
+				\PYG{n}{configurationResults}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{n}{repetition}\PYG{p}{]}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{o}{/}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n+nb}{sum}\PYG{p}{))}\PYG{o}{/}\PYG{l+m+mi}{15}
+				
+			\PYG{k}{except} \PYG{p}{(}\PYG{n+ne}{ZeroDivisionError}\PYG{p}{):}
+				\PYG{n}{configurationResults}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{n}{repetition}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{0}
+				
+	
+	\PYG{n}{percentilesArray} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{l+m+mi}{16}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{))}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{n}{percentilesArray}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{percentile}\PYG{p}{(}\PYG{n}{configurationResults}\PYG{p}{[}\PYG{n}{index}\PYG{p}{],}\PYG{l+m+mi}{25}\PYG{p}{)}
+		\PYG{n}{percentilesArray}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{percentile}\PYG{p}{(}\PYG{n}{configurationResults}\PYG{p}{[}\PYG{n}{index}\PYG{p}{],}\PYG{l+m+mi}{50}\PYG{p}{)}
+		\PYG{n}{percentilesArray}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{percentile}\PYG{p}{(}\PYG{n}{configurationResults}\PYG{p}{[}\PYG{n}{index}\PYG{p}{],}\PYG{l+m+mi}{75}\PYG{p}{)}
+	\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}25\PYGZdq{}}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{k}{print} \PYG{n}{percentilesArray}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{]}
+	\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}50\PYGZdq{}}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{k}{print} \PYG{n}{percentilesArray}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{l+m+mi}{1}\PYG{p}{]}
+	\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}75\PYGZdq{}}
+	\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{l+m+mi}{16}\PYG{p}{):}
+		\PYG{k}{print} \PYG{n}{percentilesArray}\PYG{p}{[}\PYG{n}{index}\PYG{p}{][}\PYG{l+m+mi}{2}\PYG{p}{]}
+\end{Verbatim}

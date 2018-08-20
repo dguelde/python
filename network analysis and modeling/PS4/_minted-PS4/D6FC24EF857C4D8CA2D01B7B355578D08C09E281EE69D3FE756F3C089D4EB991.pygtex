@@ -1,0 +1,144 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{}Donovan Guelde}
+\PYG{c+c1}{\PYGZsh{}csci 5352 PS4}
+
+
+
+\PYG{k+kn}{import} \PYG{n+nn}{networkx} \PYG{k+kn}{as} \PYG{n+nn}{nx}
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{random}
+\PYG{k+kn}{import} \PYG{n+nn}{time}
+\PYG{k+kn}{import} \PYG{n+nn}{math}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k+kn}{as} \PYG{n+nn}{plt}
+
+\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{main() consists of 3 nested loops for the \PYGZsq{}easter egg hunt\PYGZsq{},}
+\PYG{l+s+sd}{outer loop is an iteration over a range of epsilon values}
+\PYG{l+s+sd}{middle loop is an iteration over p values}
+\PYG{l+s+sd}{inner loop is a loop over a specific graph instance}
+\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{k}{def} \PYG{n+nf}{infectThePopulation}\PYG{p}{(}\PYG{n}{neighborMatrix}\PYG{p}{,}\PYG{n}{p}\PYG{p}{,}\PYG{n}{N}\PYG{p}{):}
+	\PYG{c+c1}{\PYGZsh{}print \PYGZdq{}\PYGZbs{}n\PYGZdq{}}
+	\PYG{n}{random}\PYG{o}{.}\PYG{n}{seed}\PYG{p}{(}\PYG{n}{time}\PYG{o}{.}\PYG{n}{time}\PYG{p}{())}
+	\PYG{n}{susceptible} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ones}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}all susceptible}
+	\PYG{n}{contageous}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}no contageous}
+	\PYG{n}{infected}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}no infected}
+	\PYG{n}{patientZero}\PYG{o}{=}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{N}\PYG{o}{*}\PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{())}
+	\PYG{n}{susceptible}\PYG{p}{[}\PYG{n}{patientZero}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{infected}\PYG{p}{[}\PYG{n}{patientZero}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1}
+	\PYG{n}{contageous}\PYG{p}{[}\PYG{n}{patientZero}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1}
+	\PYG{n}{newInfection}\PYG{o}{=}\PYG{l+m+mi}{1}
+	\PYG{n}{t}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{k}{while} \PYG{p}{(}\PYG{n}{newInfection}\PYG{o}{==}\PYG{l+m+mi}{1}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}while disease spreads (if doesn\PYGZsq{}t spread, then no new contageous nodes to check)}
+		\PYG{n}{newInfection}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{n}{newInfections}\PYG{o}{=}\PYG{p}{[]}
+		\PYG{n}{spreaders} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{contageous}\PYG{o}{==}\PYG{l+m+mi}{1}\PYG{p}{)}
+		\PYG{k}{for} \PYG{n}{person} \PYG{o+ow}{in} \PYG{n}{spreaders}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]:}
+			\PYG{k}{for} \PYG{n}{victim} \PYG{o+ow}{in} \PYG{n}{neighborMatrix}\PYG{p}{[}\PYG{n}{person}\PYG{p}{]:}
+				\PYG{k}{if} \PYG{n}{susceptible}\PYG{p}{[}\PYG{n}{victim}\PYG{p}{]}\PYG{o}{==}\PYG{l+m+mi}{1}\PYG{p}{:}
+					\PYG{n}{immunity}\PYG{o}{=}\PYG{n}{random}\PYG{o}{.}\PYG{n}{random}\PYG{p}{()}
+					\PYG{k}{if} \PYG{n}{immunity}\PYG{o}{\PYGZlt{}}\PYG{n}{p}\PYG{p}{:}
+						\PYG{n}{newInfection}\PYG{o}{=}\PYG{l+m+mi}{1}
+						\PYG{n}{newInfections}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{victim}\PYG{p}{)}
+			\PYG{n}{contageous}\PYG{p}{[}\PYG{n}{person}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{0} \PYG{c+c1}{\PYGZsh{}not contageous any more}
+			\PYG{k}{for} \PYG{n}{victim2} \PYG{o+ow}{in} \PYG{n}{newInfections}\PYG{p}{:}
+				\PYG{n}{infected}\PYG{p}{[}\PYG{n}{victim2}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1}
+				\PYG{n}{contageous}\PYG{p}{[}\PYG{n}{victim2}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1}
+				\PYG{n}{susceptible}\PYG{p}{[}\PYG{n}{victim2}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{0}
+				\PYG{n}{newInfections}\PYG{o}{.}\PYG{n}{remove}\PYG{p}{(}\PYG{n}{victim2}\PYG{p}{)}		
+		\PYG{n}{t}\PYG{o}{=}\PYG{n}{t}\PYG{o}{+}\PYG{l+m+mi}{1}
+	\PYG{n}{size} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{count\PYGZus{}nonzero}\PYG{p}{(}\PYG{n}{infected}\PYG{p}{)}
+	\PYG{k}{return} \PYG{p}{(}\PYG{n}{size}\PYG{p}{,}\PYG{n}{t}\PYG{p}{)}
+
+\PYG{k}{def} \PYG{n+nf}{plotResults}\PYG{p}{(}\PYG{n}{epidemicSize}\PYG{p}{,}\PYG{n}{epidemicLength}\PYG{p}{,}\PYG{n}{pValues}\PYG{p}{,}\PYG{n}{N}\PYG{p}{,}\PYG{n}{E}\PYG{p}{,}\PYG{n}{C}\PYG{p}{):} 
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{pValues}\PYG{p}{,}\PYG{n}{epidemicSize}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Average Epidemic Size}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s1}{(n=\PYGZob{}\PYGZcb{}, C=\PYGZob{}\PYGZcb{}, Epsilon=\PYGZob{}\PYGZcb{})\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{N}\PYG{p}{,}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{C}\PYG{p}{),}\PYG{n}{E}\PYG{p}{))}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}P\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Epidemic Size\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}./q1c/E\PYGZob{}\PYGZcb{}size.png\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{E}\PYG{p}{))}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+	\PYG{n}{tMax}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{maxIndex}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mf}{0.}
+	\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n}{epidemicLength}\PYG{p}{:}
+		\PYG{k}{if} \PYG{n}{item}\PYG{o}{\PYGZgt{}}\PYG{n}{tMax}\PYG{p}{:}
+			\PYG{n}{tMax}\PYG{o}{=}\PYG{n}{item}
+			\PYG{n}{maxIndex}\PYG{o}{=}\PYG{n}{counter}
+		\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+	\PYG{n}{maxIndex} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{maxIndex}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mf}{100.}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{pValues}\PYG{p}{,}\PYG{n}{epidemicLength}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{annotate}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Maximum Length \PYGZob{}\PYGZcb{} at p=\PYGZob{}\PYGZcb{}\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{tMax}\PYG{p}{,}\PYG{n}{maxIndex}\PYG{p}{),}\PYG{n}{xy}\PYG{o}{=}\PYG{p}{(}\PYG{n}{maxIndex}\PYG{p}{,}\PYG{n}{tMax}\PYG{p}{))}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Average Epidemic Length}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s1}{(n=\PYGZob{}\PYGZcb{}, C=\PYGZob{}\PYGZcb{}, Epsilon=\PYGZob{}\PYGZcb{})\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{N}\PYG{p}{,}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{C}\PYG{p}{),}\PYG{n}{E}\PYG{p}{))}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}P\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Epidemic Length\PYGZsq{}}\PYG{p}{)}
+	
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{axhline}\PYG{p}{(}\PYG{n}{y}\PYG{o}{=}\PYG{n}{math}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{n}{N}\PYG{p}{),}\PYG{n}{xmin}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{xmax}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{color}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}r\PYGZsq{}}\PYG{p}{,}\PYG{n}{ls}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}dashed\PYGZsq{}}\PYG{p}{)}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{savefig}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}./q1c/\PYGZob{}\PYGZcb{}Elength.png\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{E}\PYG{p}{))}
+	\PYG{n}{plt}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+
+\PYG{k}{def} \PYG{n+nf}{main}\PYG{p}{():}
+	\PYG{c+c1}{\PYGZsh{}important variables}
+	\PYG{n}{ITERATIONSONP}\PYG{o}{=}\PYG{l+m+mi}{250} \PYG{c+c1}{\PYGZsh{} number of iterations for each p value}
+	\PYG{n}{ITERATIONSPERGRAPH}\PYG{o}{=}\PYG{l+m+mi}{250} \PYG{c+c1}{\PYGZsh{}iterations on each graph}
+	\PYG{n}{Emin}\PYG{o}{=}\PYG{l+m+mf}{15.0} \PYG{c+c1}{\PYGZsh{}range of epsilon values to consider}
+	\PYG{n}{Emax}\PYG{o}{=}\PYG{l+m+mf}{16.0}
+	\PYG{n}{ESTEP}\PYG{o}{=.}\PYG{l+m+mi}{1}
+	\PYG{n}{PMIN}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{PMAX}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{c+c1}{\PYGZsh{}range of p values to consider}
+	\PYG{n}{PSTEP}\PYG{o}{=.}\PYG{l+m+mi}{1}
+	\PYG{n}{C}\PYG{o}{=}\PYG{l+m+mi}{8}
+	\PYG{n}{N}\PYG{o}{=}\PYG{l+m+mi}{200}
+	\PYG{n}{L}\PYG{o}{=}\PYG{l+m+mi}{2}
+	\PYG{n}{size}\PYG{o}{=}\PYG{p}{((}\PYG{n}{PMAX}\PYG{o}{\PYGZhy{}}\PYG{n}{PMIN}\PYG{p}{)}\PYG{o}{/}\PYG{n}{PSTEP}\PYG{p}{)}\PYG{o}{+}\PYG{l+m+mi}{1}
+	\PYG{n}{epidemicSize}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{size}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}hold results from outer loop}
+	\PYG{n}{epidemicLength}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{size}\PYG{p}{))}
+	\PYG{n}{pValues}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{size}\PYG{p}{))}
+	\PYG{n}{E}\PYG{o}{=}\PYG{n}{Emin}
+	\PYG{k}{while} \PYG{p}{(}\PYG{n}{E} \PYG{o}{\PYGZlt{}} \PYG{n}{Emax}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}iterate on a range of epsilon values}
+		\PYG{n}{c}\PYG{o}{=}\PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{C}\PYG{p}{)}
+		\PYG{n}{k}\PYG{o}{=}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{N}\PYG{o}{/}\PYG{n}{L}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}k=vertices per group}
+		\PYG{n}{c\PYGZus{}in}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{C}\PYG{o}{+}\PYG{n}{E}
+		\PYG{n}{c\PYGZus{}out}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{C}\PYG{o}{\PYGZhy{}}\PYG{n}{E}
+		\PYG{n}{p\PYGZus{}in}\PYG{o}{=}\PYG{p}{(}\PYG{o}{.}\PYG{l+m+mi}{5}\PYG{o}{*}\PYG{n}{c\PYGZus{}in}\PYG{p}{)}\PYG{o}{/}\PYG{n}{N}
+		\PYG{n}{p\PYGZus{}out}\PYG{o}{=}\PYG{p}{(}\PYG{o}{.}\PYG{l+m+mi}{5}\PYG{o}{*}\PYG{n}{c\PYGZus{}out}\PYG{p}{)}\PYG{o}{/}\PYG{n}{N}
+		\PYG{n}{p}\PYG{o}{=}\PYG{n}{PMIN}
+		\PYG{n}{counter}\PYG{o}{=}\PYG{l+m+mi}{0}
+		\PYG{k}{while} \PYG{p}{(}\PYG{n}{p}\PYG{o}{\PYGZlt{}}\PYG{n}{PMAX}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}next inner loop, over p values}
+			\PYG{n}{start} \PYG{o}{=} \PYG{n}{time}\PYG{o}{.}\PYG{n}{time}\PYG{p}{()}
+			\PYG{n}{pValues}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]}\PYG{o}{=}\PYG{n}{p} \PYG{c+c1}{\PYGZsh{}use this p on multiple generated graphs (multiple times)}
+			\PYG{n}{sizeArray}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{ITERATIONSONP}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}store size results for runs on multiple graphs}
+			\PYG{n}{lengthArray}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{ITERATIONSONP}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}store length results for runs on multiple graphs}
+			\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{ITERATIONSONP}\PYG{p}{):} 
+				\PYG{c+c1}{\PYGZsh{}store size results for multiple infections on one graph}
+				\PYG{n}{graphInfectionSize}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{ITERATIONSPERGRAPH}\PYG{p}{))} 
+				\PYG{c+c1}{\PYGZsh{}store length results for multiple infections on one graph}
+				\PYG{n}{graphInfectionLength}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{ITERATIONSPERGRAPH}\PYG{p}{))} 
+				\PYG{n}{g} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{planted\PYGZus{}partition\PYGZus{}graph}\PYG{p}{(}\PYG{n}{L}\PYG{p}{,}\PYG{n}{k}\PYG{p}{,}\PYG{n}{p\PYGZus{}in}\PYG{p}{,}\PYG{n}{p\PYGZus{}out}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}generate planted partition graph}
+				\PYG{n}{AssociationMatrix} \PYG{o}{=} \PYG{n}{nx}\PYG{o}{.}\PYG{n}{to\PYGZus{}numpy\PYGZus{}matrix}\PYG{p}{(}\PYG{n}{g}\PYG{p}{)}
+				\PYG{n}{neighbors}\PYG{o}{=}\PYG{p}{[]}
+				\PYG{n}{counter2}\PYG{o}{=}\PYG{l+m+mi}{0}
+				\PYG{k}{for} \PYG{n}{item} \PYG{o+ow}{in} \PYG{n}{g}\PYG{p}{:}
+					\PYG{n}{neighbors}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{nx}\PYG{o}{.}\PYG{n}{neighbors}\PYG{p}{(}\PYG{n}{g}\PYG{p}{,}\PYG{n}{counter2}\PYG{p}{))}
+					\PYG{n}{counter2}\PYG{o}{+=}\PYG{l+m+mi}{1}
+				\PYG{n}{neighborMatrix} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{asarray}\PYG{p}{(}\PYG{n}{neighbors}\PYG{p}{)}
+				\PYG{k}{for} \PYG{n}{index2} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{ITERATIONSPERGRAPH}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}iterate on a graph}
+					\PYG{n}{graphInfectionSize}\PYG{p}{[}\PYG{n}{index2}\PYG{p}{],}\PYG{n}{graphInfectionLength}\PYG{p}{[}\PYG{n}{index2}\PYG{p}{]}\PYG{o}{=}
+						\PYG{n}{infectThePopulation}\PYG{p}{(}\PYG{n}{neighborMatrix}\PYG{p}{,}\PYG{n}{p}\PYG{p}{,}\PYG{n}{N}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}run scenario on graph}
+				\PYG{n}{sizeArray}\PYG{p}{[}\PYG{n}{index}\PYG{p}{]}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n}{graphInfectionSize}\PYG{p}{)}\PYG{o}{/}\PYG{n}{ITERATIONSPERGRAPH} \PYG{c+c1}{\PYGZsh{}average size of infection }
+																				\PYG{c+c1}{\PYGZsh{}from the given graph}
+				\PYG{c+c1}{\PYGZsh{}average length from given graph}
+				\PYG{n}{lengthArray}\PYG{p}{[}\PYG{n}{index}\PYG{p}{]}\PYG{o}{=}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n}{graphInfectionLength}\PYG{p}{))}\PYG{o}{/}\PYG{n}{ITERATIONSPERGRAPH} 
+			\PYG{c+c1}{\PYGZsh{}average infection length from multiple graphs for given value of p}
+			\PYG{n}{epidemicLength}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]}\PYG{o}{=}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n}{lengthArray}\PYG{p}{))}\PYG{o}{/}\PYG{n}{ITERATIONSONP} 
+			\PYG{c+c1}{\PYGZsh{}average infection size from multiple graphs for given value of p}
+			\PYG{n}{epidemicSize}\PYG{p}{[}\PYG{n}{counter}\PYG{p}{]}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n}{sizeArray}\PYG{p}{)}\PYG{o}{/}\PYG{n}{ITERATIONSONP}	
+			\PYG{n}{p}\PYG{o}{+=}\PYG{n}{PSTEP} \PYG{c+c1}{\PYGZsh{}end of p\PYGZhy{}loop}
+			\PYG{n}{counter}\PYG{o}{+=}\PYG{l+m+mi}{1}
+			\PYG{k}{print} \PYG{l+s+s2}{\PYGZdq{}E\PYGZdq{}}\PYG{p}{,}\PYG{n}{E}\PYG{p}{,}\PYG{l+s+s2}{\PYGZdq{}p\PYGZdq{}}\PYG{p}{,}\PYG{n}{p}\PYG{p}{,}\PYG{n}{time}\PYG{o}{.}\PYG{n}{time}\PYG{p}{()}\PYG{o}{\PYGZhy{}}\PYG{n}{start}
+		\PYG{n}{np}\PYG{o}{.}\PYG{n}{savetxt}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}./q1c/E\PYGZob{}\PYGZcb{}length.txt\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{E}\PYG{p}{),}\PYG{n}{epidemicLength}\PYG{p}{)}
+		\PYG{n}{np}\PYG{o}{.}\PYG{n}{savetxt}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}./q1c/E\PYGZob{}\PYGZcb{}size.txt\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{E}\PYG{p}{),}\PYG{n}{epidemicSize}\PYG{p}{)}
+		\PYG{n}{plotResults}\PYG{p}{(}\PYG{n}{epidemicSize}\PYG{p}{,}\PYG{n}{epidemicLength}\PYG{p}{,}\PYG{n}{pValues}\PYG{p}{,}\PYG{n}{N}\PYG{p}{,}\PYG{n}{E}\PYG{p}{,}\PYG{n}{C}\PYG{p}{)}
+		\PYG{n}{E}\PYG{o}{+=}\PYG{n}{ESTEP} \PYG{c+c1}{\PYGZsh{}end of e\PYGZhy{}loop}
+
+\PYG{n}{main}\PYG{p}{()}
+\end{Verbatim}

@@ -1,0 +1,83 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{}Donovan Guelde}
+\PYG{c+c1}{\PYGZsh{}csci 5352 PS5 extra credit}
+\PYG{c+c1}{\PYGZsh{}Yeast transcription network (2002)}
+\PYG{c+c1}{\PYGZsh{}	http://www.weizmann.ac.il/mcb/UriAlon/download/collection\PYGZhy{}complex\PYGZhy{}networks for yeast network, }
+\PYG{c+c1}{\PYGZsh{}US airport networks (2010)}
+\PYG{c+c1}{\PYGZsh{}	http://opsahl.co.uk/tnet/datasets/USairport\PYGZus{}2010.txt }
+
+\PYG{k+kn}{import} \PYG{n+nn}{numpy} \PYG{k+kn}{as} \PYG{n+nn}{np}
+\PYG{k+kn}{import} \PYG{n+nn}{random}
+\PYG{k+kn}{import} \PYG{n+nn}{time}
+\PYG{k+kn}{import} \PYG{n+nn}{math}
+\PYG{k+kn}{import} \PYG{n+nn}{matplotlib.pyplot} \PYG{k+kn}{as} \PYG{n+nn}{plt}
+\PYG{k+kn}{import} \PYG{n+nn}{igraph}
+
+\PYG{k}{def} \PYG{n+nf}{readFile}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{):}
+	\PYG{k}{with} \PYG{p}{(}\PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{fileName}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}r\PYGZsq{}}\PYG{p}{))}\PYG{k}{as} \PYG{n}{f}\PYG{p}{:}
+		\PYG{n}{matrix}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{l+m+mi}{1858}\PYG{p}{,}\PYG{l+m+mi}{1858}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}yeast network has n=688 nodes, airport network has 1574 (labels go up to 1858)}
+		\PYG{k}{for} \PYG{n}{line} \PYG{o+ow}{in} \PYG{n}{f}\PYG{p}{:}
+			\PYG{n}{line}\PYG{o}{=}\PYG{n}{line}\PYG{o}{.}\PYG{n}{split}\PYG{p}{()}
+			\PYG{n}{node}\PYG{p}{,}\PYG{n}{neighbor}\PYG{o}{=}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{])}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{])}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{}minus 1 to begin at 0}
+			\PYG{n}{matrix}\PYG{p}{[}\PYG{n}{node}\PYG{p}{][}\PYG{n}{neighbor}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1}
+			\PYG{n}{matrix}\PYG{p}{[}\PYG{n}{neighbor}\PYG{p}{][}\PYG{n}{node}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{c+c1}{\PYGZsh{}undirected, unweighted}
+	\PYG{n}{f}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}
+	\PYG{k}{return} \PYG{n}{matrix}
+
+\PYG{k}{class} \PYG{n+nc}{GraphHelper}\PYG{p}{(}\PYG{n+nb}{object}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}some easy, fast igraph help...not really helpful in this program}
+	\PYG{k}{def} \PYG{n+nf}{\PYGZus{}\PYGZus{}init\PYGZus{}\PYGZus{}}\PYG{p}{(}\PYG{n+nb+bp}{self}\PYG{p}{,}\PYG{n}{graph}\PYG{p}{):}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{graph}\PYG{o}{=}\PYG{n}{graph}
+		\PYG{n+nb+bp}{self}\PYG{o}{.}\PYG{n}{adjlist}\PYG{o}{=}\PYG{n+nb}{map}\PYG{p}{(}\PYG{n+nb}{set}\PYG{p}{,}\PYG{n}{graph}\PYG{o}{.}\PYG{n}{get\PYGZus{}adjlist}\PYG{p}{())}
+	
+\PYG{k}{def} \PYG{n+nf}{main}\PYG{p}{():}
+	\PYG{c+c1}{\PYGZsh{}FILENAME=\PYGZdq{}yeastInter\PYGZus{}st.txt\PYGZdq{}}
+	\PYG{n}{FILENAME}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}USairport\PYGZus{}2010.txt\PYGZdq{}}
+	\PYG{n}{ITERATIONSPERNODE}\PYG{o}{=}\PYG{l+m+mi}{2000} \PYG{c+c1}{\PYGZsh{}iterations on each node}
+	\PYG{n}{matrix} \PYG{o}{=} \PYG{n}{readFile}\PYG{p}{(}\PYG{n}{FILENAME}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}numpy matrix}
+	\PYG{n}{networkSize}\PYG{o}{=}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{matrix}\PYG{p}{)}
+	\PYG{n}{g} \PYG{o}{=} \PYG{n}{igraph}\PYG{o}{.}\PYG{n}{Graph}\PYG{o}{.}\PYG{n}{Adjacency}\PYG{p}{((}\PYG{n}{matrix}\PYG{o}{\PYGZgt{}}\PYG{l+m+mi}{0}\PYG{p}{)}\PYG{o}{.}\PYG{n}{tolist}\PYG{p}{())}
+	\PYG{n}{c} \PYG{o}{=} \PYG{n}{igraph}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{g}\PYG{o}{.}\PYG{n}{degree}\PYG{p}{())}
+	\PYG{n}{p} \PYG{o}{=} \PYG{l+m+mf}{1.}\PYG{o}{/}\PYG{n}{c} \PYG{c+c1}{\PYGZsh{}transmission probability}
+
+	\PYG{n}{epidemicSize}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{networkSize}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}average cascade size per node}
+	\PYG{n}{cascadeSize}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{ITERATIONSPERNODE}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}cascade size per run on patient Zero node}
+	\PYG{n}{possibleNewInfections}\PYG{o}{=}\PYG{p}{[]} \PYG{c+c1}{\PYGZsh{}neighbors of contageous nodes}
+	\PYG{n}{newInfections}\PYG{o}{=}\PYG{p}{[]} \PYG{c+c1}{\PYGZsh{}newly infected nodes at a single time t}
+	\PYG{k}{for} \PYG{n}{patientZero} \PYG{o+ow}{in} \PYG{n+nb}{xrange}\PYG{p}{(}\PYG{n}{networkSize}\PYG{p}{):} \PYG{c+c1}{\PYGZsh{}everybody gets a turn...}
+		\PYG{k}{print} \PYG{n}{patientZero}
+		\PYG{k}{for} \PYG{n}{iteration} \PYG{o+ow}{in} \PYG{n+nb}{xrange}\PYG{p}{(}\PYG{n}{ITERATIONSPERNODE}\PYG{p}{):}
+			\PYG{n}{start} \PYG{o}{=} \PYG{n}{time}\PYG{o}{.}\PYG{n}{time}\PYG{p}{()}
+			\PYG{n}{immunity}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{rand}\PYG{p}{(}\PYG{n}{networkSize}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}immunity chance for nodes}
+			\PYG{n}{condition}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{networkSize}\PYG{p}{)} \PYG{c+c1}{\PYGZsh{}0=susceptible, 1=contageous, 2=infected but not contageous}
+			\PYG{n}{condition}\PYG{p}{[}\PYG{n}{patientZero}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1}
+			\PYG{n}{newInfection}\PYG{o}{=}\PYG{n+nb+bp}{True}
+			\PYG{k}{while}\PYG{p}{(}\PYG{n}{newInfection}\PYG{p}{):}
+				\PYG{n}{newInfection}\PYG{o}{=}\PYG{n+nb+bp}{False}
+				\PYG{n}{diseaseSpreaders}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{condition}\PYG{o}{==}\PYG{l+m+mi}{1}\PYG{p}{)}
+				\PYG{n}{condition}\PYG{p}{[}\PYG{n}{condition}\PYG{o}{==}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{2} \PYG{c+c1}{\PYGZsh{}not contageous any more}
+				\PYG{k}{try}\PYG{p}{:} \PYG{c+c1}{\PYGZsh{}will throw error if no neighbors (if patient zero has no edges...)}
+					\PYG{n}{exposed}\PYG{o}{=}\PYG{p}{[}\PYG{n}{neighbors}\PYG{p}{[}\PYG{n}{spreader}\PYG{p}{]} \PYG{k}{for} \PYG{n}{spreader} \PYG{o+ow}{in} \PYG{n}{diseaseSpreaders}\PYG{p}{][}\PYG{l+m+mi}{0}\PYG{p}{]}
+				\PYG{k}{except} \PYG{n+ne}{TypeError}\PYG{p}{:}
+					\PYG{k}{continue}
+				\PYG{n}{exposed}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{intersect1d}\PYG{p}{(}\PYG{n}{exposed}\PYG{p}{,}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{condition}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{}remove non\PYGZhy{}susceptible from list}
+				\PYG{k}{if}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{exposed}\PYG{p}{)}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{):} \PYG{k}{continue} \PYG{c+c1}{\PYGZsh{}if no susceptible, finished}
+				\PYG{n}{newInfections}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{intersect1d}\PYG{p}{(}\PYG{n}{exposed}\PYG{p}{,}\PYG{n}{exposed}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{immunity}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{n}{exposed}\PYG{p}{)]}\PYG{o}{\PYGZlt{}}\PYG{n}{p}\PYG{p}{)])} \PYG{c+c1}{\PYGZsh{}cascade spreads as function of p}
+				\PYG{n}{condition}\PYG{p}{[}\PYG{n}{newInfections}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{1} \PYG{c+c1}{\PYGZsh{}contageous}
+				\PYG{k}{if} \PYG{n}{newInfections}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{()}\PYG{o}{\PYGZgt{}}\PYG{l+m+mi}{0}\PYG{p}{:}
+					\PYG{n}{newInfection}\PYG{o}{=}\PYG{n+nb+bp}{True}
+			\PYG{n}{cascadeSize}\PYG{p}{[}\PYG{n}{iteration}\PYG{p}{]}\PYG{o}{=}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{condition}\PYG{o}{!=}\PYG{l+m+mi}{0}\PYG{p}{)[}\PYG{l+m+mi}{0}\PYG{p}{])} \PYG{c+c1}{\PYGZsh{}if contageous or infected, you count as sick}
+		\PYG{n}{epidemicSize}\PYG{p}{[}\PYG{n}{patientZero}\PYG{p}{]}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{average}\PYG{p}{(}\PYG{n}{cascadeSize}\PYG{p}{)}
+	\PYG{n}{outputFile}\PYG{o}{=}\PYG{n}{FILENAME}\PYG{p}{[:}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{4}\PYG{p}{]}\PYG{o}{+}\PYG{l+s+s2}{\PYGZdq{}\PYGZus{}undirected\PYGZus{}\PYGZob{}\PYGZcb{}\PYGZus{}iterations\PYGZus{}results.txt\PYGZdq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{ITERATIONSPERNODE}\PYG{p}{)}
+	\PYG{k}{with} \PYG{p}{(}\PYG{n+nb}{open}\PYG{p}{(}\PYG{n}{outputFile}\PYG{p}{,}\PYG{l+s+s1}{\PYGZsq{}w\PYGZsq{}}\PYG{p}{))}\PYG{k}{as} \PYG{n}{f}\PYG{p}{:}
+		\PYG{k}{for} \PYG{n}{index} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,}\PYG{n}{networkSize}\PYG{p}{):}
+			\PYG{n}{winner}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{argmax}\PYG{p}{(}\PYG{n}{epidemicSize}\PYG{p}{)} 
+			\PYG{n}{f}\PYG{o}{.}\PYG{n}{write}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}\PYGZob{}\PYGZcb{} \PYGZob{}\PYGZcb{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s1}{\PYGZsq{}}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{n}{winner}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{epidemicSize}\PYG{p}{[}\PYG{n}{winner}\PYG{p}{]))}
+			\PYG{n}{epidemicSize}\PYG{p}{[}\PYG{n}{winner}\PYG{p}{]}\PYG{o}{=}\PYG{l+m+mi}{0}
+	\PYG{n}{f}\PYG{o}{.}\PYG{n}{close}\PYG{p}{()}		
+		\PYG{c+c1}{\PYGZsh{}np.savetxt(\PYGZsq{}./q1c/E\PYGZob{}\PYGZcb{}length.txt\PYGZsq{}.format(E),epidemicLength)}
+		\PYG{c+c1}{\PYGZsh{}np.savetxt(\PYGZsq{}./q1c/E\PYGZob{}\PYGZcb{}size.txt\PYGZsq{}.format(E),epidemicSize)}
+		\PYG{c+c1}{\PYGZsh{}plotResults(epidemicSize,epidemicLength,pValues,N,E,C)}
+		\PYG{c+c1}{\PYGZsh{}E+=ESTEP \PYGZsh{}end of e\PYGZhy{}loop}
+
+\PYG{n}{main}\PYG{p}{()}
+\end{Verbatim}
