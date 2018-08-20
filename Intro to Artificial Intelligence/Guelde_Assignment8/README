@@ -1,0 +1,30 @@
+Donovan Guelde Assignment 8
+
+Execute with “python Guelde_Assignment8.py  <optional CLA>”
+
+Program will accept a CLA to read input from a different file.  If no CLA provided,
+	program will use “typos20.data” included in .zip
+
+Results saved to output.txt in current directory
+
+Output is in the form:
+
+Marginal Probabilities
+
+P(a) = 0.0738432102364
+P(b) = 0.0145518957824
+P(c) = 0.0337152552
+…
+
+Emission Probabilities:
+
+P (a | a)=0.794871794872
+P (b | a)=0.000100948919847
+P (c | a)=0.000100948919847
+…
+
+Transition Probabilities:
+
+P ( a | a )=0.00141328487785
+P ( b | a )=0.0232182515647
+P ( c | a )=0.0458308096103
